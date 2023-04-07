@@ -17,9 +17,19 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "docker:up": "docker-compose -f docker-compose.yml up -d",
+    "docker:down": "docker-compose -f docker-compose.yml down",
+    "migration:generate": "npx ts-node ./node_modules/.bin/typeorm migration:generate -d libs/DatabaseSource.ts migrations/$npm_config_name",
+    "migration:run": "npx ts-node ./node_modules/.bin/typeorm migration:run -d libs/DatabaseSource.ts",
+    "migration:revert": "npx ts-node ./node_modules/.bin/typeorm migration:revert -d libs/DatabaseSource.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.204.0",
+    "@aws-sdk/client-sns": "^3.204.0",
+    "@aws-sdk/client-sqs": "^3.204.0",
+    "@aws-sdk/s3-request-presigner": "^3.163.0",
+    "@aws-sdk/util-endpoints": "^3.192.0",
     "@nestjs-plus/discovery": "^2.0.2",
     "@nestjs/axios": "^1.0.0",
     "@nestjs/common": "^9.0.11",
