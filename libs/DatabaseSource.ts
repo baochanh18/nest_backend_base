@@ -1,7 +1,7 @@
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { DataSource } from 'typeorm';
-import { AccountEntity } from '../src/account/infrastructure/entity/AccountEntity';
-import { NotificationEntity } from '../src/notification/infrastructure/entities/NotificationEntity';
+// import { AccountEntity } from '../src/account/infrastructure/entity/AccountEntity';
+// import { NotificationEntity } from '../src/notification/infrastructure/entities/NotificationEntity';
 import { Config } from '../src/Config';
 
 export const connectionSource = new DataSource({
@@ -16,7 +16,7 @@ export const connectionSource = new DataSource({
   password: Config.DATABASE_PASSWORD,
   synchronize: Config.DATABASE_SYNC,
   cache: true,
-  entities: [AccountEntity, NotificationEntity],
+  entities: [],
   migrations: ['../migrations/*.ts'],
   namingStrategy: new SnakeNamingStrategy(),
 });

@@ -11,10 +11,10 @@ import {
 
 import { Config } from '../src/Config';
 
-import { AccountEntity } from '../src/account/infrastructure/entity/AccountEntity';
-import { NotificationEntity } from '../src/notification/infrastructure/entities/NotificationEntity';
+// import { AccountEntity } from '../src/account/infrastructure/entity/AccountEntity';
+// import { NotificationEntity } from '../src/notification/infrastructure/entities/NotificationEntity';
 import { v4 } from 'uuid';
-import { connectionSource } from './DatabaseSource'
+import { connectionSource } from './DatabaseSource';
 
 interface WriteConnection {
   readonly startTransaction: (
@@ -47,9 +47,6 @@ export let readConnection = {} as ReadConnection;
 
 class DatabaseService implements OnModuleInit, OnModuleDestroy {
   async onModuleInit(): Promise<void> {
-    await connectionSource.initialize();
-    if (connectionSource.isInitialized)
-      throw new Error('DataSource is not initialized');
     writeConnection = connectionSource.createQueryRunner();
     readConnection = connectionSource.manager;
   }

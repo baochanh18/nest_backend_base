@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
+import { ApiNoContentResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -8,5 +9,12 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse()
+  @Get('health')
+  health(): any {
+    return { status: 200 };
   }
 }
