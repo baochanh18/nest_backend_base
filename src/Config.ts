@@ -34,7 +34,7 @@ class Configuration {
   readonly DATABASE_HOST = process.env.DATABASE_HOST as string || 'localhost';
 
   @IsInt()
-  readonly DATABASE_PORT = Number(process.env.DATABASE_PORT) || 3306;
+  readonly DATABASE_PORT = Number(process.env.DATABASE_PORT) || 33060;
 
   @IsString()
   readonly DATABASE_NAME = process.env.DATABASE_NAME as string || 'disney';
