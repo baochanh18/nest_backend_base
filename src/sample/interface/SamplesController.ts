@@ -28,7 +28,7 @@ import {
 
 import { FindSamplesRequestQueryString } from 'src/sample/interface/dto/FindSamplesRequestQueryString';
 import { SampleRequestDTO } from './dto/SampleRequestDTO';
-import { FindSampleByIdRequestParam } from 'src/sample/interface/dto/FindAccountByIdRequestParam';
+import { FindSampleByIdRequestParam } from 'src/sample/interface/dto/FindSampleByIdRequestParam';
 import { FindSampleByIdResponseDTO } from 'src/sample/interface/dto/FindSampleByIdResponseDTO';
 import { FindSamplesResponseDto } from 'src/sample/interface/dto/FindSamplesResponseDto';
 import { ResponseDescription } from 'src/sample/interface/ResponseDescription';

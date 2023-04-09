@@ -1,6 +1,5 @@
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { DataSource } from 'typeorm';
-// import { AccountEntity } from '../src/account/infrastructure/entity/AccountEntity';
 import { Config } from '../src/Config';
 
 export const connectionSource = new DataSource({
