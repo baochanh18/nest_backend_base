@@ -10,7 +10,7 @@ import { TaskPublisher, TASK_PUBLISHER } from '../../libs/MessageModule';
 
 import { SampleQueryImplement } from './infrastructure/query/SampleQueryImplement';
 import { SampleRepositoryImplement } from './infrastructure/repository/SampleRepositoryImplement';
-import { SampleEntity } from './infrastructure/entity/SampleEntity';
+import { SampleEntity } from './infrastructure/entity/Sample';
 
 import { SamplesController } from './presentation/SamplesController';
 import { SampleTaskController } from './presentation/SampleTaskController';

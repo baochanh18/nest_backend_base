@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:up": "docker-compose -f docker-compose.yml up -d",
     "docker:down": "docker-compose -f docker-compose.yml down",
-    "migration:generate": "npx ts-node ./node_modules/.bin/typeorm migration:generate -d libs/DatabaseSource.ts migrations/$npm_config_name",
+    "migration:generate": "npx ts-node ./node_modules/.bin/typeorm migration:generate -d libs/DatabaseSource.ts src/RDS/migrations/$npm_config_name",
     "migration:run": "npx ts-node ./node_modules/.bin/typeorm migration:run -d libs/DatabaseSource.ts",
     "migration:revert": "npx ts-node ./node_modules/.bin/typeorm migration:revert -d libs/DatabaseSource.ts"
   },
@@ -54,7 +54,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.6",
     "swagger-ui-express": "^4.5.0",
-    "typeorm": "^0.3.9",
+    "typeorm": "^0.3.14",
     "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.0"
   },

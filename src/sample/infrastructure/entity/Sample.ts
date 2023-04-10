@@ -2,13 +2,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class SampleEntity {
-  @PrimaryColumn({ type: 'int', length: 16 })
+  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: number;
 
   @CreateDateColumn()

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { readConnection } from '../../../../libs/DatabaseModule';
 
-import { SampleEntity } from '../entity/SampleEntity';
+import { SampleEntity } from '../entity/Sample';
 
 import { SampleQuery } from '../../application/query/SampleQuery';
 import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';

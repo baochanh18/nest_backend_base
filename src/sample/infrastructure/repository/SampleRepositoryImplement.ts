@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 
 import { writeConnection } from '../../../../libs/DatabaseModule';
 
-import { SampleEntity } from '../../infrastructure/entity/SampleEntity';
+import { SampleEntity } from '../entity/Sample';
 
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { Sample, SampleProperties } from '../../domain/aggregate/Sample';
