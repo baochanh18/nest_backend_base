@@ -31,7 +31,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
   setupSwagger(app);
-  console.log('Config.PORT', Config.PORT)
   await app.listen(Config.PORT);
 }
 

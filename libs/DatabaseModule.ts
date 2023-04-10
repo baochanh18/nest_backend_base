@@ -50,11 +50,8 @@ class DatabaseService implements OnModuleInit, OnModuleDestroy {
   }
 }
 
-export const ENTITY_ID_TRANSFORMER = 'EntityIdTransformer';
-
 @Global()
 @Module({
   providers: [DatabaseService],
-  exports: [ENTITY_ID_TRANSFORMER],
 })
 export class DatabaseModule {}

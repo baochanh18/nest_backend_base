@@ -1,5 +1,6 @@
 FROM node:hydrogen-alpine
 COPY . /app
 WORKDIR /app
+RUN npm i
 RUN npm ci
 ENTRYPOINT [ "npm", "run", "start:debug" ]

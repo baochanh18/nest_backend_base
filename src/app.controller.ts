@@ -17,4 +17,11 @@ export class AppController {
   health(): any {
     return { status: 200 };
   }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  @Get('favicon.io')
+  favicon(): void {
+    return;
+  }
 }
