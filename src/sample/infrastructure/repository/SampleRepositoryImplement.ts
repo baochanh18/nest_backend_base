@@ -2,11 +2,11 @@ import { Inject } from '@nestjs/common';
 
 import { writeConnection } from '../../../../libs/DatabaseModule';
 
-import { SampleEntity } from 'src/sample/infrastructure/entity/SampleEntity';
+import { SampleEntity } from '../../infrastructure/entity/SampleEntity';
 
-import { SampleRepository } from 'src/sample/domain/SampleRepository';
-import { Sample, SampleProperties } from 'src/sample/domain/Sample';
-import { SampleFactory } from 'src/sample/domain/SampleFactory';
+import { SampleRepository } from '../../domain/SampleRepository';
+import { Sample, SampleProperties } from '../../domain/Sample';
+import { SampleFactory } from '../../domain/SampleFactory';
 
 export class SampleRepositoryImplement implements SampleRepository {
   @Inject() private readonly sampleFactory: SampleFactory;

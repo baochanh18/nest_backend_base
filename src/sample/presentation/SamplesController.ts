@@ -26,16 +26,16 @@ import {
 
 // import { Auth, AuthorizedHeader } from 'libs/Auth';
 
-import { FindSamplesRequestQueryString } from 'src/sample/presentation/dto/FindSamplesRequestQueryString';
+import { FindSamplesRequestQueryString } from './dto/FindSamplesRequestQueryString';
 import { SampleRequestDTO } from './dto/SampleRequestDTO';
-import { FindSampleByIdRequestParam } from 'src/sample/presentation/dto/FindSampleByIdRequestParam';
-import { FindSampleByIdResponseDTO } from 'src/sample/presentation/dto/FindSampleByIdResponseDTO';
-import { FindSamplesResponseDto } from 'src/sample/presentation/dto/FindSamplesResponseDto';
-import { ResponseDescription } from 'src/sample/presentation/ResponseDescription';
+import { FindSampleByIdRequestParam } from './dto/FindSampleByIdRequestParam';
+import { FindSampleByIdResponseDTO } from './dto/FindSampleByIdResponseDTO';
+import { FindSamplesResponseDto } from './dto/FindSamplesResponseDto';
+import { ResponseDescription } from './ResponseDescription';
 
-import { SampleCommand } from 'src/sample/application/command/SampleCommand';
-import { FindSampleByIdQuery } from 'src/sample/application/query/FindSampleByIdQuery';
-import { FindSamplesQuery } from 'src/sample/application/query/FindSamplesQuery';
+import { SampleCommand } from '../application/command/SampleCommand';
+import { FindSampleByIdQuery } from '../application/query/FindSampleByIdQuery';
+import { FindSamplesQuery } from '../application/query/FindSamplesQuery';
 
 // import { ErrorMessage } from 'src/sample/domain/ErrorMessage';
 

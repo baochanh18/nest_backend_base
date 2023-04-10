@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { FindSampleByIdResult } from 'src/sample/application/query/FindSampleByIdResult';
+import { FindSampleByIdResult } from '../../application/query/FindSampleByIdResult';
 
 export class FindSampleByIdResponseDTO extends FindSampleByIdResult {
   @ApiProperty({ example: 1 })

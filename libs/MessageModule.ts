@@ -24,7 +24,7 @@ import { Interval } from '@nestjs/schedule';
 
 import { RequestStorage } from 'libs/RequestStorage';
 
-import { Config } from 'src/Config';
+import { Config } from '../src/Config';
 
 type Message = Readonly<{ name: string; body: IEvent; requestId: number }>;
 type MessageHandlerMetadata = Readonly<{ name: string }>;
