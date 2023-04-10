@@ -33,7 +33,7 @@ import { FindSampleByIdResponseDTO } from 'src/sample/presentation/dto/FindSampl
 import { FindSamplesResponseDto } from 'src/sample/presentation/dto/FindSamplesResponseDto';
 import { ResponseDescription } from 'src/sample/presentation/ResponseDescription';
 
-import { SampleCommand } from 'src/sample/application/usecase/SampleCommand';
+import { SampleCommand } from 'src/sample/application/command/SampleCommand';
 import { FindSampleByIdQuery } from 'src/sample/application/query/FindSampleByIdQuery';
 import { FindSamplesQuery } from 'src/sample/application/query/FindSamplesQuery';
 

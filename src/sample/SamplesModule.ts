@@ -15,7 +15,7 @@ import { SampleEntity } from './infrastructure/entity/SampleEntity';
 import { SamplesController } from './presentation/SamplesController';
 import { SampleTaskController } from './presentation/SampleTaskController';
 
-import { SampleHandler } from './application/usecase/SampleHandler';
+import { SampleHandler } from './application/command/SampleHandler';
 import { FindSampleByIdHandler } from './application/query/FindSampleByIdHandler';
 import { FindSamplesHandler } from './application/query/FindSamplesHandler';
 import { InjectionToken } from './application/InjectionToken';
@@ -23,7 +23,7 @@ import { SampleEventHandler } from './application/event/SampleEventHandler';
 
 import { SampleDomainService } from './domain/SampleDomainService';
 import { SampleFactory } from './domain/SampleFactory';
-import { SampleCommand } from './application/usecase/SampleCommand';
+import { SampleCommand } from './application/command/SampleCommand';
 
 const infrastructure: Provider[] = [
   {
