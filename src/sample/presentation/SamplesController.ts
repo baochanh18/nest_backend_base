@@ -34,8 +34,8 @@ import { FindSamplesResponseDto } from './dto/FindSamplesResponseDto';
 import { ResponseDescription } from './ResponseDescription';
 
 import { SampleCommand } from '../application/command/SampleCommand';
-import { FindSampleByIdQuery } from '../application/query/FindSampleByIdQuery';
-import { FindSamplesQuery } from '../application/query/FindSamplesQuery';
+import { FindSampleByIdQuery } from '../application/query/FindSampleById/FindSampleByIdQuery';
+import { FindSamplesQuery } from '../application/query/FindSamples/FindSamplesQuery';
 
 // import { ErrorMessage } from 'src/sample/domain/ErrorMessage';
 

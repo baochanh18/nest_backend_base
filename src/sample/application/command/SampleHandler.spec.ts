@@ -4,9 +4,9 @@ import { Test } from '@nestjs/testing';
 import { SampleCommand } from './SampleCommand';
 import { SampleHandler } from './SampleHandler';
 import { InjectionToken } from '../InjectionToken';
-import { SampleFactory } from '../../domain/SampleFactory';
+import { SampleFactory } from '../../domain/factory/SampleFactory';
 
-import { SampleRepository } from '../../domain/SampleRepository';
+import { SampleRepository } from '../../domain/repository/SampleRepository';
 
 jest.mock('../../../../libs/Transactional', () => ({
   Transactional: () => () => undefined,

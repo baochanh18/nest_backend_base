@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { InjectionToken } from '../InjectionToken';
-import { SampleQuery } from './SampleQuery';
+import { InjectionToken } from '../../InjectionToken';
+import { SampleQuery } from '../SampleQuery';
 import { FindSampleByIdQuery } from './FindSampleByIdQuery';
 import { FindSampleByIdResult } from './FindSampleByIdResult';
 
-import { ErrorMessage } from '../../domain/ErrorMessage';
+import { ErrorMessage } from '../../../domain/ErrorMessage';
 
 @QueryHandler(FindSampleByIdQuery)
 export class FindSampleByIdHandler

@@ -1,4 +1,4 @@
-import { Sample } from './Sample';
+import { Sample } from '../Sample';
 import { SampleDomainService, CheckIdOptions } from './SampleDomainService';
 
 describe('SampleDomainService', () => {

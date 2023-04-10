@@ -6,8 +6,8 @@ import { Transactional } from '../../../../libs/Transactional';
 import { SampleCommand } from './SampleCommand';
 import { InjectionToken } from '../InjectionToken';
 
-import { SampleFactory } from '../../domain/SampleFactory';
-import { SampleRepository } from '../../domain/SampleRepository';
+import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleRepository } from '../../domain/repository/SampleRepository';
 
 @CommandHandler(SampleCommand)
 export class SampleHandler implements ICommandHandler<SampleCommand, void> {

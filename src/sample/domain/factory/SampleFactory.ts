@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { EventPublisher } from '@nestjs/cqrs';
 
-import { Sample, SampleAggregate, SampleProperties } from './Sample';
+import { Sample, SampleAggregate, SampleProperties } from '../aggregate/Sample';
 
 type CreateSampleOptions = Readonly<{
   id: number;

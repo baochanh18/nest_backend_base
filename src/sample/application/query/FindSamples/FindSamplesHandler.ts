@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
-import { InjectionToken } from 'src/sample/application/InjectionToken';
-import { SampleQuery } from 'src/sample/application/query/SampleQuery';
-import { FindSamplesQuery } from 'src/sample/application/query/FindSamplesQuery';
-import { FindSamplesResult } from 'src/sample/application/query/FindSamplesResult';
+import { InjectionToken } from '../../../application/InjectionToken';
+import { SampleQuery } from '../../../application/query/SampleQuery';
+import { FindSamplesQuery } from './FindSamplesQuery';
+import { FindSamplesResult } from './FindSamplesResult';
 
 @QueryHandler(FindSamplesQuery)
 export class FindSamplesHandler

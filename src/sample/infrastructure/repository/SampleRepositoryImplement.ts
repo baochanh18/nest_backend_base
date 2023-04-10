@@ -4,9 +4,9 @@ import { writeConnection } from '../../../../libs/DatabaseModule';
 
 import { SampleEntity } from '../../infrastructure/entity/SampleEntity';
 
-import { SampleRepository } from '../../domain/SampleRepository';
-import { Sample, SampleProperties } from '../../domain/Sample';
-import { SampleFactory } from '../../domain/SampleFactory';
+import { SampleRepository } from '../../domain/repository/SampleRepository';
+import { Sample, SampleProperties } from '../../domain/aggregate/Sample';
+import { SampleFactory } from '../../domain/factory/SampleFactory';
 
 export class SampleRepositoryImplement implements SampleRepository {
   @Inject() private readonly sampleFactory: SampleFactory;

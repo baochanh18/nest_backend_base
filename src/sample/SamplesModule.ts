@@ -16,13 +16,13 @@ import { SamplesController } from './presentation/SamplesController';
 import { SampleTaskController } from './presentation/SampleTaskController';
 
 import { SampleHandler } from './application/command/SampleHandler';
-import { FindSampleByIdHandler } from './application/query/FindSampleByIdHandler';
-import { FindSamplesHandler } from './application/query/FindSamplesHandler';
+import { FindSampleByIdHandler } from './application/query/FindSampleById/FindSampleByIdHandler';
+import { FindSamplesHandler } from './application/query/FindSamples/FindSamplesHandler';
 import { InjectionToken } from './application/InjectionToken';
 import { SampleEventHandler } from './application/event/SampleEventHandler';
 
-import { SampleDomainService } from './domain/SampleDomainService';
-import { SampleFactory } from './domain/SampleFactory';
+import { SampleDomainService } from './domain/service/SampleDomainService';
+import { SampleFactory } from './domain/factory/SampleFactory';
 import { SampleCommand } from './application/command/SampleCommand';
 
 const infrastructure: Provider[] = [

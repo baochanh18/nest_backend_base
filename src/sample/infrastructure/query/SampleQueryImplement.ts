@@ -5,9 +5,9 @@ import { readConnection } from '../../../../libs/DatabaseModule';
 import { SampleEntity } from '../entity/SampleEntity';
 
 import { SampleQuery } from '../../application/query/SampleQuery';
-import { FindSampleByIdResult } from '../../application/query/FindSampleByIdResult';
-import { FindSamplesResult } from '../../application/query/FindSamplesResult';
-import { FindSamplesQuery } from '../../application/query/FindSamplesQuery';
+import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
+import { FindSamplesResult } from '../../application/query/FindSamples/FindSamplesResult';
+import { FindSamplesQuery } from '../../application/query/FindSamples/FindSamplesQuery';
 
 @Injectable()
 export class SampleQueryImplement implements SampleQuery {

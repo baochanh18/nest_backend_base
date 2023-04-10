@@ -1,4 +1,4 @@
-import { Sample } from './Sample';
+import { Sample } from '../aggregate/Sample';
 
 export interface SampleRepository {
   save: (sample: Sample | Sample[]) => Promise<void>;

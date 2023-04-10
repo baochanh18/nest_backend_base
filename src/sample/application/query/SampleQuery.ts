@@ -1,6 +1,6 @@
-import { FindSampleByIdResult } from './FindSampleByIdResult';
-import { FindSamplesQuery } from './FindSamplesQuery';
-import { FindSamplesResult } from './FindSamplesResult';
+import { FindSampleByIdResult } from './FindSampleById/FindSampleByIdResult';
+import { FindSamplesQuery } from './FindSamples/FindSamplesQuery';
+import { FindSamplesResult } from './FindSamples/FindSamplesResult';
 
 export interface SampleQuery {
   findById: (id: number) => Promise<FindSampleByIdResult | null>;

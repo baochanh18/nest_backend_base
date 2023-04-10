@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { FindSamplesResult } from '../../application/query/FindSamplesResult';
+import { FindSamplesResult } from '../../application/query/FindSamples/FindSamplesResult';
 
 class Sample {
   @ApiProperty({ example: 1 })

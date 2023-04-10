@@ -1,4 +1,4 @@
-import { Sample } from './Sample';
+import { Sample } from '../aggregate/Sample';
 
 export class CheckIdOptions {
   readonly sample: Sample;

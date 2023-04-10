@@ -1,8 +1,8 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 
-import { ErrorMessage } from './ErrorMessage';
-import { SampleEvent } from './event/SampleEvent';
+import { ErrorMessage } from '../ErrorMessage';
+import { SampleEvent } from '../event/SampleEvent';
 
 export type SampleEssentialProperties = Readonly<
   Required<{
