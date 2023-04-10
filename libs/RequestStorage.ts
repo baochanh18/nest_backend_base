@@ -1,11 +1,9 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { AsyncLocalStorage } from 'async_hooks';
 
-import { EntityId } from 'libs/DatabaseModule';
-
 class Storage {
   constructor(
-    readonly requestId = new EntityId().toString(),
+    readonly requestId = 1,
     readonly transactionDepth = 0,
   ) {}
 }
@@ -15,7 +13,7 @@ interface RequestStorage {
   resetTransactionDepth: () => void;
   increaseTransactionDepth: () => void;
   decreaseTransactionDepth: () => void;
-  setRequestId: (requestId: string) => void;
+  setRequestId: (requestId: number) => void;
 }
 
 class RequestStorageImplement implements RequestStorage {
@@ -46,7 +44,7 @@ class RequestStorageImplement implements RequestStorage {
     });
   }
 
-  setRequestId(requestId: string): void {
+  setRequestId(requestId: number): void {
     const storage = this.getStorage();
     this.storage.enterWith({ ...storage, requestId });
   }

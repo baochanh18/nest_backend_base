@@ -3,7 +3,7 @@ import { CommandBus } from '@nestjs/cqrs';
 
 import { MessageHandler } from '../../../libs/MessageModule';
 
-import { SampleCommand } from '../application/command/SampleCommand';
+import { SampleCommand } from '../application/usecase/SampleCommand';
 
 @Controller()
 export class SampleTaskController {

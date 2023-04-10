@@ -1,6 +1,5 @@
 import {
   Body,
-  CacheInterceptor,
   Controller,
   Delete,
   Get,
@@ -13,6 +12,7 @@ import {
   NotFoundException,
   Headers,
 } from '@nestjs/common';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBadRequestResponse,
@@ -26,14 +26,14 @@ import {
 
 // import { Auth, AuthorizedHeader } from 'libs/Auth';
 
-import { FindSamplesRequestQueryString } from 'src/sample/interface/dto/FindSamplesRequestQueryString';
+import { FindSamplesRequestQueryString } from 'src/sample/presentation/dto/FindSamplesRequestQueryString';
 import { SampleRequestDTO } from './dto/SampleRequestDTO';
-import { FindSampleByIdRequestParam } from 'src/sample/interface/dto/FindSampleByIdRequestParam';
-import { FindSampleByIdResponseDTO } from 'src/sample/interface/dto/FindSampleByIdResponseDTO';
-import { FindSamplesResponseDto } from 'src/sample/interface/dto/FindSamplesResponseDto';
-import { ResponseDescription } from 'src/sample/interface/ResponseDescription';
+import { FindSampleByIdRequestParam } from 'src/sample/presentation/dto/FindSampleByIdRequestParam';
+import { FindSampleByIdResponseDTO } from 'src/sample/presentation/dto/FindSampleByIdResponseDTO';
+import { FindSamplesResponseDto } from 'src/sample/presentation/dto/FindSamplesResponseDto';
+import { ResponseDescription } from 'src/sample/presentation/ResponseDescription';
 
-import { SampleCommand } from 'src/sample/application/command/SampleCommand';
+import { SampleCommand } from 'src/sample/application/usecase/SampleCommand';
 import { FindSampleByIdQuery } from 'src/sample/application/query/FindSampleByIdQuery';
 import { FindSamplesQuery } from 'src/sample/application/query/FindSamplesQuery';
 

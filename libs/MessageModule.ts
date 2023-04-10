@@ -26,7 +26,7 @@ import { RequestStorage } from 'libs/RequestStorage';
 
 import { Config } from 'src/Config';
 
-type Message = Readonly<{ name: string; body: IEvent; requestId: string }>;
+type Message = Readonly<{ name: string; body: IEvent; requestId: number }>;
 type MessageHandlerMetadata = Readonly<{ name: string }>;
 
 const SQS_CONSUMER_METHOD = Symbol.for('SQS_CONSUMER_METHOD');

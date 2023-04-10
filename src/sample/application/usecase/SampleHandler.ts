@@ -21,7 +21,6 @@ export class SampleHandler implements ICommandHandler<SampleCommand, void> {
       ...command,
     });
 
-    console.log('sample --------------------------------', sample);
     if (sample.compareId(1)) {
       await this.sampleRepository.findById(1);
     }

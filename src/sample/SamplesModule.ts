@@ -12,10 +12,10 @@ import { SampleQueryImplement } from './infrastructure/query/SampleQueryImplemen
 import { SampleRepositoryImplement } from './infrastructure/repository/SampleRepositoryImplement';
 import { SampleEntity } from './infrastructure/entity/SampleEntity';
 
-import { SamplesController } from './interface/SamplesController';
-import { SampleTaskController } from './interface/SampleTaskController';
+import { SamplesController } from './presentation/SamplesController';
+import { SampleTaskController } from './presentation/SampleTaskController';
 
-import { SampleHandler } from './application/command/SampleHandler';
+import { SampleHandler } from './application/usecase/SampleHandler';
 import { FindSampleByIdHandler } from './application/query/FindSampleByIdHandler';
 import { FindSamplesHandler } from './application/query/FindSamplesHandler';
 import { InjectionToken } from './application/InjectionToken';
@@ -23,7 +23,7 @@ import { SampleEventHandler } from './application/event/SampleEventHandler';
 
 import { SampleDomainService } from './domain/SampleDomainService';
 import { SampleFactory } from './domain/SampleFactory';
-import { SampleCommand } from './application/command/SampleCommand';
+import { SampleCommand } from './application/usecase/SampleCommand';
 
 const infrastructure: Provider[] = [
   {
