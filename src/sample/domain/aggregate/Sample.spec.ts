@@ -4,6 +4,17 @@ import { SampleAggregate, SampleProperties } from './Sample';
 import { SampleEvent } from '../event/SampleEvent';
 
 describe('Sample', () => {
+  describe('compareId', () => {
+    it('should apply compareId', () => {
+      const sample = new SampleAggregate({
+        id: 1,
+      } as SampleProperties);
+
+      const result = sample.compareId(1);
+
+      expect(result).toEqual(true);
+    });
+  });
   describe('sampleEvent', () => {
     it('should apply SampleEvent', () => {
       const sample = new SampleAggregate({

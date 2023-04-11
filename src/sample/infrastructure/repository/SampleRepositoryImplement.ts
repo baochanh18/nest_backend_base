@@ -25,7 +25,7 @@ export class SampleRepositoryImplement implements SampleRepository {
   }
 
   private modelToEntity(model: Sample): SampleEntity {
-    const properties = JSON.parse(JSON.stringify(model)) as SampleProperties;
+    const properties = JSON.parse(JSON.stringify(model)) as SampleProperties; // deep clone object
     return {
       ...properties,
       id: properties.id,

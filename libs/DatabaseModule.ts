@@ -1,5 +1,7 @@
 import { Global, Module, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import {
+  DataSource,
+  DataSourceOptions,
   EntityManager,
   EntityTarget,
   ObjectLiteral,
@@ -7,7 +9,6 @@ import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
-
 import { connectionSource } from './DatabaseSource';
 
 interface WriteConnection {
@@ -40,13 +41,15 @@ export let writeConnection = {} as WriteConnection;
 export let readConnection = {} as ReadConnection;
 
 class DatabaseService implements OnModuleInit, OnModuleDestroy {
+  private readonly dataSource = new DataSource(connectionSource as DataSourceOptions);
+
   async onModuleInit(): Promise<void> {
-    writeConnection = connectionSource.createQueryRunner();
-    readConnection = connectionSource.manager;
+    writeConnection = this.dataSource.createQueryRunner();
+    readConnection = this.dataSource.manager;
   }
 
   async onModuleDestroy(): Promise<void> {
-    await connectionSource.destroy();
+    await this.dataSource.destroy();
   }
 }
 
