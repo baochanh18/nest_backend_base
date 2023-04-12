@@ -49,6 +49,20 @@ services:
       - ./libs:/app/libs:ro
       - ./node_modules:/app/node_modules
 
+  mongo:
+    container_name: disney_mongo
+    image: mongo
+    restart: always
+    ports:
+      - '47017:27017'
+    volumes:
+      - ./database/disney_document:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=disney
+      - MONGO_INITDB_ROOT_USERNAME=disney
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    command: mongod --auth
+
   localstack:
     image: localstack/localstack
     ports:
