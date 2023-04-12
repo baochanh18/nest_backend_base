@@ -6,7 +6,7 @@ import { DatabaseModule } from '../libs/DatabaseModule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RequestStorageMiddleware } from 'libs/RequestStorageMiddleware';
+import { RequestStorageMiddleware } from '../libs/RequestStorageMiddleware';
 
 @Module({
   imports: [

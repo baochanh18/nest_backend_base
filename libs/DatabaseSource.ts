@@ -1,8 +1,7 @@
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { DataSource } from 'typeorm';
 import { Config } from '../src/Config';
 
-export const connectionSource = new DataSource({
+export const connectionSource = {
   name: 'default',
   type: 'mysql',
   charset: 'utf8mb4_unicode_ci',
@@ -20,4 +19,4 @@ export const connectionSource = new DataSource({
   ],
   migrations: ['src/RDS/migrations/*.ts'],
   namingStrategy: new SnakeNamingStrategy(),
-});
+};

@@ -7,6 +7,7 @@ import { InjectionToken } from '../InjectionToken';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 
 import { SampleRepository } from '../../domain/repository/SampleRepository';
+import { testModules } from '../../../../libs/Testing';
 
 jest.mock('../../../../libs/Transactional', () => ({
   Transactional: () => () => undefined,
@@ -18,25 +19,11 @@ describe('SampleHandler', () => {
   let factory: SampleFactory;
 
   beforeEach(async () => {
-    const repoProvider: Provider = {
-      provide: InjectionToken.SAMPLE_REPOSITORY,
-      useValue: {},
-    };
-    const factoryProvider: Provider = {
-      provide: SampleFactory,
-      useValue: {},
-    };
-    const providers: Provider[] = [
-      SampleHandler,
-      repoProvider,
-      factoryProvider,
-    ];
-    const moduleMetadata: ModuleMetadata = { providers };
-    const testModule = await Test.createTestingModule(moduleMetadata).compile();
+    const _testModules = await testModules();
 
-    handler = testModule.get(SampleHandler);
-    repository = testModule.get(InjectionToken.SAMPLE_REPOSITORY);
-    factory = testModule.get(SampleFactory);
+    handler = _testModules.get(SampleHandler);
+    repository = _testModules.get(InjectionToken.SAMPLE_REPOSITORY);
+    factory = _testModules.get(SampleFactory);
   });
 
   describe('execute', () => {

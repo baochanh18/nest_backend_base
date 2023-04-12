@@ -22,7 +22,7 @@ import {
 } from '@aws-sdk/client-sns';
 import { Interval } from '@nestjs/schedule';
 
-import { RequestStorage } from 'libs/RequestStorage';
+import { RequestStorage } from '../libs/RequestStorage';
 
 import { Config } from '../src/Config';
 

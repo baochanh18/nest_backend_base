@@ -25,7 +25,7 @@ export class SampleRepositoryImplement implements SampleRepository {
   }
 
   private modelToEntity(model: Sample): SampleEntity {
-    const properties = JSON.parse(JSON.stringify(model)) as SampleProperties;
+    const properties = JSON.parse(JSON.stringify(model)) as SampleProperties; // deep clone object
     return {
       ...properties,
       id: properties.id,
@@ -35,11 +35,6 @@ export class SampleRepositoryImplement implements SampleRepository {
   }
 
   private entityToModel(entity: SampleEntity): Sample {
-    return this.sampleFactory.reconstitute({
-      ...entity,
-      id: entity.id,
-      createdAt: entity.createdAt,
-      deletedAt: entity.deletedAt,
-    });
+    return this.sampleFactory.reconstitute({...entity});
   }
 }
