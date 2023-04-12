@@ -51,17 +51,19 @@ services:
 
   mongo:
     container_name: disney_mongo
-    image: mongo
+    image: mongo:4.4
     restart: always
     ports:
       - '47017:27017'
     volumes:
-      - ./database/disney_document:/data/db
+      - ./mongo:/docker-entrypoint-initdb.d
     environment:
       - MONGO_INITDB_DATABASE=disney
-      - MONGO_INITDB_ROOT_USERNAME=disney
+      - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
-    command: mongod --auth
+      - MONGODB_USERNAME=disney
+      - MONGODB_PASSWORD=password
+    command: mongod --bind_ip 0.0.0.0
 
   localstack:
     image: localstack/localstack
