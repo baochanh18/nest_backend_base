@@ -35,11 +35,6 @@ export class SampleRepositoryImplement implements SampleRepository {
   }
 
   private entityToModel(entity: SampleEntity): Sample {
-    return this.sampleFactory.reconstitute({
-      ...entity,
-      id: entity.id,
-      createdAt: entity.createdAt,
-      deletedAt: entity.deletedAt,
-    });
+    return this.sampleFactory.reconstitute({...entity});
   }
 }

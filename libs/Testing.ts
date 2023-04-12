@@ -5,6 +5,7 @@ import { SampleHandler } from '../src/sample/application/command/SampleHandler';
 import { SampleFactory } from '../src/sample/domain/factory/SampleFactory';
 import { InjectionToken } from '../src/sample/application/InjectionToken';
 import { EventPublisher } from '@nestjs/cqrs';
+import { SampleRepositoryImplement } from '../src/sample/infrastructure/repository/SampleRepositoryImplement';
 
 export const nestAppForTest = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -19,12 +20,13 @@ export const nestAppForTest = async () => {
 export const testModules = async () => {
   const SampleRepoProvider: Provider = {
     provide: InjectionToken.SAMPLE_REPOSITORY,
-    useValue: {},
+    useClass: SampleRepositoryImplement,
   };
 
   const factoryProvider: Provider = {
     provide: SampleFactory,
     useValue: {},
+    useClass: SampleFactory,
   };
 
   const eventPublisher: Provider = {
