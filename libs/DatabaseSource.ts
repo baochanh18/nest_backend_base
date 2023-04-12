@@ -14,7 +14,6 @@ export const connectionSource = {
   synchronize: Config.DATABASE_SYNC,
   cache: true,
   entities: [
-    // '!src/**/infrastructure/entity/*.ts',
     'src/**/infrastructure/entity/!(Sample).ts',
   ],
   migrations: ['src/RDS/migrations/*.ts'],

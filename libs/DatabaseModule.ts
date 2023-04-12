@@ -10,6 +10,7 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 import { connectionSource } from './DatabaseSource';
+import { documentDbConnection } from './DocumentDBModule';
 
 interface WriteConnection {
   readonly startTransaction: (
@@ -41,7 +42,9 @@ export let writeConnection = {} as WriteConnection;
 export let readConnection = {} as ReadConnection;
 
 class DatabaseService implements OnModuleInit, OnModuleDestroy {
-  private readonly dataSource = new DataSource(connectionSource as DataSourceOptions);
+  private readonly dataSource = new DataSource(
+    connectionSource as DataSourceOptions,
+  );
 
   async onModuleInit(): Promise<void> {
     writeConnection = this.dataSource.createQueryRunner();
@@ -56,5 +59,6 @@ class DatabaseService implements OnModuleInit, OnModuleDestroy {
 @Global()
 @Module({
   providers: [DatabaseService],
+  imports: [documentDbConnection],
 })
 export class DatabaseModule {}

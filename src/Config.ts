@@ -54,6 +54,21 @@ class Configuration {
   @IsInt()
   readonly PORT = Number(process.env.PORT) || 4000;
 
+  @IsString()
+  readonly DOCUMENT_DATABASE_HOST = process.env.DOCUMENT_DATABASE_HOST as string || 'localhost';
+
+  @IsInt()
+  readonly DOCUMENT_DATABASE_PORT = Number(process.env.DOCUMENT_DATABASE_PORT) || 47017;
+
+  @IsString()
+  readonly DOCUMENT_DATABASE_NAME = process.env.MONGODB_USERNAME as string || 'disney';
+
+  @IsString()
+  readonly DOCUMENT_DATABASE_USER = process.env.MONGODB_USERNAME as string || 'disney';
+
+  @IsString()
+  readonly DOCUMENT_DATABASE_PASSWORD = process.env.MONGODB_PASSWORD as string || 'password';
+
   constructor() {
     const error = validateSync(this);
     if (!error.length) return;
