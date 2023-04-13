@@ -1,29 +1,48 @@
 import { EventPublisher } from '@nestjs/cqrs';
-import { Test, TestingModule } from '@nestjs/testing';
 import { SampleFactory } from './SampleFactory';
 import { SampleAggregate } from '../aggregate/Sample';
 import { testModules } from '../../../../libs/Testing';
+import { Provider } from '@nestjs/common';
 
 describe('SampleFactory', () => {
   let factory: SampleFactory;
   let publisher: EventPublisher;
+  let options: any;
+  let properties: any;
+  let result: SampleAggregate;
 
-  beforeEach(async () => {
-    const testModule = await testModules();
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        SampleFactory,
-        {
-          provide: EventPublisher,
-          useValue: {
-            mergeObjectContext: jest.fn(),
-          },
+  beforeAll(async () => {
+    const providers: Provider[] = [
+      SampleFactory,
+      {
+        provide: EventPublisher,
+        useValue: {
+          mergeObjectContext: jest.fn(),
         },
-      ],
-    }).compile();
+      },
+    ];
+    const testModule = await testModules(providers);
 
-    factory = module.get<SampleFactory>(SampleFactory);
-    publisher = module.get<EventPublisher>(EventPublisher);
+    factory = testModule.get<SampleFactory>(SampleFactory);
+    publisher = testModule.get<EventPublisher>(EventPublisher);
+
+    options = { id: 1 };
+    properties = {
+      id: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: null,
+    };
+    result = new SampleAggregate({
+      ...options,
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+      deletedAt: null,
+    });
+  });
+
+  beforeEach(() => {
+    jest.spyOn(publisher, 'mergeObjectContext').mockReturnValue(result);
   });
 
   afterEach(() => {
@@ -32,17 +51,10 @@ describe('SampleFactory', () => {
 
   describe('create', () => {
     it('should create a new sample aggregate with the given options', () => {
-      const options = { id: 1 };
-      const result = new SampleAggregate({
-        ...options,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-        deletedAt: null,
-      });
-      jest.spyOn(publisher, 'mergeObjectContext').mockReturnValue(result);
-
+      // Act
       const sample = factory.create(options);
 
+      // Assert
       expect(sample).toBe(result);
       expect(publisher.mergeObjectContext).toHaveBeenCalledWith(result);
     });
@@ -50,18 +62,10 @@ describe('SampleFactory', () => {
 
   describe('reconstitute', () => {
     it('should reconstitute an existing sample aggregate from properties', () => {
-      const properties = {
-        id: 1,
-        name: 'Test Sample',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
-      const result = new SampleAggregate(properties);
-      jest.spyOn(publisher, 'mergeObjectContext').mockReturnValue(result);
-
+      // Act
       const sample = factory.reconstitute(properties);
 
+      // Assert
       expect(sample).toBe(result);
       expect(publisher.mergeObjectContext).toHaveBeenCalledWith(result);
     });

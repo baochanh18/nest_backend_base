@@ -47,6 +47,7 @@ class DatabaseService implements OnModuleInit, OnModuleDestroy {
   );
 
   async onModuleInit(): Promise<void> {
+    console.log('onModuleInit--------------------');
     writeConnection = this.dataSource.createQueryRunner();
     readConnection = this.dataSource.manager;
   }

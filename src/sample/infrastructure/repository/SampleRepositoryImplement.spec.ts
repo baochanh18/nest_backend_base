@@ -7,6 +7,8 @@ import { SampleAggregate } from '../../domain/aggregate/Sample';
 import { EventPublisher } from '@nestjs/cqrs';
 import { InjectionToken } from '../../application/InjectionToken';
 import { Repository } from 'typeorm';
+import { Provider } from '@nestjs/common';
+import { SampleFactory } from '../../domain/factory/SampleFactory';
 
 describe('SampleRepositoryImplement', () => {
   let repository: SampleRepository;
@@ -15,7 +17,20 @@ describe('SampleRepositoryImplement', () => {
 
   beforeAll(async () => {
     await nestAppForTest();
-    const testModule = await testModules();
+    const providers: Provider[] = [
+      SampleFactory,
+      {
+        provide: InjectionToken.SAMPLE_REPOSITORY,
+        useClass: SampleRepositoryImplement,
+      },
+      {
+        provide: EventPublisher,
+        useValue: {
+          mergeObjectContext: jest.fn(),
+        },
+      },
+    ];
+    const testModule = await testModules(providers);
 
     publisher = testModule.get<EventPublisher>(EventPublisher);
     repository = testModule.get<SampleRepositoryImplement>(

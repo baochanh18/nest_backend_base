@@ -7,7 +7,7 @@ import {
   INTEGRATION_EVENT_PUBLISHER,
   Topic,
 } from '../../../../libs/MessageModule';
-import { Transactional } from 'libs/Transactional';
+import { Transactional } from '../../../../libs/Transactional';
 
 import { SampleEvent } from '../../domain/event/SampleEvent';
 

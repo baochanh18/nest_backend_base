@@ -13,7 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --clearCache && jest",
+    "test": "jest --clearCache && DATABASE_NAME=disney_test jest --detectOpenHandles --forceExit",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -22,7 +22,9 @@
     "docker:down": "docker-compose -f docker-compose.yml down",
     "migration:generate": "npx ts-node ./node_modules/.bin/typeorm migration:generate -d libs/DatabaseSource.ts src/RDS/migrations/$npm_config_name",
     "migration:run": "npx ts-node ./node_modules/.bin/typeorm migration:run -d libs/DatabaseSource.ts",
-    "migration:revert": "npx ts-node ./node_modules/.bin/typeorm migration:revert -d libs/DatabaseSource.ts"
+    "migration:revert": "npx ts-node ./node_modules/.bin/typeorm migration:revert -d libs/DatabaseSource.ts",
+    "migration:run:test": "DATABASE_NAME=disney_test npx ts-node ./node_modules/.bin/typeorm migration:run -d libs/DatabaseSource.ts",
+    "migration:revert:test": "DATABASE_NAME=disney_test npx ts-node ./node_modules/.bin/typeorm migration:revert -d libs/DatabaseSource.ts"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.204.0",

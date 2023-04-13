@@ -4,23 +4,26 @@ import { SampleAggregate, SampleProperties } from './Sample';
 import { SampleEvent } from '../event/SampleEvent';
 
 describe('Sample', () => {
+  let sample: SampleAggregate;
+
+  beforeEach(() => {
+    sample = new SampleAggregate({ id: 1 } as SampleProperties);
+  });
+
   describe('compareId', () => {
-    it('should apply compareId', () => {
-      const sample = new SampleAggregate({
-        id: 1,
-      } as SampleProperties);
-
+    it('should return true when given ID is the same as sample ID', () => {
       const result = sample.compareId(1);
-
       expect(result).toEqual(true);
     });
-  });
-  describe('sampleEvent', () => {
-    it('should apply SampleEvent', () => {
-      const sample = new SampleAggregate({
-        id: 1,
-      } as SampleProperties);
 
+    it('should return false when given ID is different from sample ID', () => {
+      const result = sample.compareId(2);
+      expect(result).toEqual(false);
+    });
+  });
+
+  describe('sampleEvent', () => {
+    it('should add a SampleEvent to the queue', () => {
       sample.sampleEvent();
 
       const appliedEvent = sample.getUncommittedEvents();
@@ -31,8 +34,6 @@ describe('Sample', () => {
 
   describe('sampleErrorEvent', () => {
     it('should throw InternalServerErrorException when given id is under 1', () => {
-      const sample = new SampleAggregate({} as SampleProperties);
-
       expect(() => sample.sampleErrorEvent(0)).toThrowError(
         InternalServerErrorException,
       );

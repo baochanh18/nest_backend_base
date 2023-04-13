@@ -11,13 +11,4 @@ db.createUser({
     db: "$MONGO_INITDB_DATABASE"
   }]
 })
-use bridge_test
-db.createUser({
-  user: "$MONGODB_USERNAME",
-  pwd: "$MONGODB_PASSWORD",
-  roles: [{
-    role: "dbOwner",
-    db: "bridge_test"
-  }]
-})
 EOF
