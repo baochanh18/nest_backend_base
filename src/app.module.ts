@@ -13,8 +13,8 @@ import { MessageModule } from '../libs/MessageModule';
 @Module({
   imports: [
     DatabaseModule,
-    SamplesModule,
-    MessageModule,
+    // SamplesModule,
+    // MessageModule,
     CacheModule.register({ isGlobal: true }),
     ThrottlerModule.forRoot(),
     ScheduleModule.forRoot(),

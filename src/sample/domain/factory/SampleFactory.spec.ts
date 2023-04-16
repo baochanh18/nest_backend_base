@@ -21,7 +21,7 @@ describe('SampleFactory', () => {
         },
       },
     ];
-    const testModule = await testModules(providers);
+    const { testModule } = await testModules(providers);
 
     factory = testModule.get<SampleFactory>(SampleFactory);
     publisher = testModule.get<EventPublisher>(EventPublisher);

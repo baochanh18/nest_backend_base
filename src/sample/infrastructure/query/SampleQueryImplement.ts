@@ -12,19 +12,17 @@ import { FindSamplesQuery } from '../../application/query/FindSamples/FindSample
 @Injectable()
 export class SampleQueryImplement implements SampleQuery {
   async findById(id: number): Promise<FindSampleByIdResult | null> {
-    return readConnection
+    const entity = await readConnection
       .getRepository(SampleEntity)
-      .findOneBy({ id })
-      .then((entity) =>
-        entity
-          ? {
-              id: entity.id,
-              createdAt: entity.createdAt,
-              updatedAt: entity.updatedAt,
-              deletedAt: entity.deletedAt,
-            }
-          : null,
-      );
+      .findOneBy({ id });
+    return entity
+      ? {
+          id: entity.id,
+          createdAt: entity.createdAt,
+          updatedAt: entity.updatedAt,
+          deletedAt: entity.deletedAt,
+        }
+      : null;
   }
 
   async find(query: FindSamplesQuery): Promise<FindSamplesResult> {

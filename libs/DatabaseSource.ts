@@ -14,6 +14,7 @@ export const connectionSource = {
   password: Config.DATABASE_PASSWORD,
   synchronize: Config.DATABASE_SYNC,
   cache: true,
+  timezone: 'Z',
   entities: ['src/**/infrastructure/entity/*.ts'],
   migrations: ['src/RDS/migrations/*.ts'],
   namingStrategy: new SnakeNamingStrategy(),

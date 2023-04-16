@@ -1,29 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import {
-  InjectRepository,
-  TypeOrmModule,
-  getRepositoryToken,
-} from '@nestjs/typeorm';
-import { DataSourceOptions, Repository } from 'typeorm';
-import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
-import { FindSamplesResult } from '../../application/query/FindSamples/FindSamplesResult';
-import { FindSamplesQuery } from '../../application/query/FindSamples/FindSamplesQuery';
-import { SampleEntity } from '../entity/Sample';
-import { SampleQueryImplement } from './SampleQueryImplement';
-import { testModules } from '../../../../libs/Testing';
-import { connectionSource } from '../../../../libs/DatabaseSource';
-import { InjectionToken } from '../../application/InjectionToken';
-import { SampleRepositoryImplement } from '../repository/SampleRepositoryImplement';
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { TestingModule } from '@nestjs/testing';
 import { EventPublisher } from '@nestjs/cqrs';
+import { INestApplication, Provider } from '@nestjs/common';
+
+import { Repository } from 'typeorm';
+import { writeConnection } from '../../../../libs/DatabaseModule';
+import { SampleEntity } from '../entity/Sample';
+import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleQueryImplement } from './SampleQueryImplement';
+import { SampleRepositoryImplement } from '../repository/SampleRepositoryImplement';
+import { testModules } from '../../../../libs/Testing';
+import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
 
 describe('SampleQueryImplement', () => {
-  let module: TestingModule;
   let query: SampleQueryImplement;
   let repository: Repository<SampleEntity>;
+  let testConnection: { testModule: TestingModule; app: INestApplication };
 
   beforeAll(async () => {
-    const providers = [
+    const providers: Provider[] = [
       SampleQueryImplement,
       SampleRepositoryImplement,
       SampleFactory,
@@ -34,65 +28,75 @@ describe('SampleQueryImplement', () => {
         },
       },
     ];
-    module = await testModules(providers);
-    // Test.createTestingModule({
-    //   imports: [
-    //     TypeOrmModule.forRoot({
-    //       // your database configuration here
-    //     }),
-    //     TypeOrmModule.forFeature([SampleEntity]),
-    //   ],
-    //
-    // }).compile();
+    testConnection = await testModules(providers);
 
-    query = module.get(SampleQueryImplement);
-    repository = module.get(SampleRepositoryImplement);
+    query = testConnection.testModule.get(SampleQueryImplement);
+    repository = testConnection.testModule.get(SampleRepositoryImplement);
+    await writeConnection.manager.delete(SampleEntity, {});
   });
 
-  afterAll(() => {
-    module.close();
+  afterAll(async () => {
+    await writeConnection.manager.delete(SampleEntity, {});
+    await testConnection.app.close();
   });
 
   describe('findById', () => {
-    it('should return null if entity is not found', async () => {
-      const result = await query.findById(1000);
-
-      expect(result).toBeNull();
+    let result: FindSampleByIdResult | null;
+    describe('should return null if entity is not found', () => {
+      beforeAll(async () => {
+        result = await query.findById(1000);
+      });
+      it('expect result to be null', () => {
+        expect(result).toBeNull();
+      });
     });
 
-    it('should return entity data if entity is found', async () => {
-      const entity = new SampleEntity();
-      entity.id = 1;
-      entity.createdAt = new Date();
+    describe('should return entity data if entity is found', () => {
+      let entity: SampleEntity;
+      beforeAll(async () => {
+        entity = new SampleEntity();
+        entity.id = 1;
 
-      await repository.save(entity);
+        await repository.save(entity);
 
-      const result = await query.findById(1);
-
-      // expect(result.id).toEqual(entity.id);
-      // expect(result.createdAt).toEqual(entity.createdAt);
+        result = await query.findById(1);
+      });
+      it('expect result not null', () => {
+        expect(result).not.toBeNull();
+        expect(result?.id).toEqual(entity.id.toString());
+      });
     });
   });
 
-  // describe('find', () => {
-  //   it('should return an empty array if no entities are found', async () => {
-  //     await repository.clear();
+  describe('find', () => {
+    beforeAll(async () => {
+      await writeConnection.manager.delete(SampleEntity, {});
+    });
+    describe('should return an empty array if no entities are found', () => {
+      let result;
+      beforeAll(async () => {
+        result = await query.find({ skip: 0, take: 10 });
+      });
+      it('length equal 0', async () => {
+        expect(result.samples).toHaveLength(0);
+      });
+    });
 
-  //     const result = await query.find({ skip: 0, take: 10 });
+    describe('should return an array of entity data if entities are found', () => {
+      let result;
+      let entity: SampleEntity;
+      beforeAll(async () => {
+        entity = new SampleEntity();
+        entity.id = 1;
 
-  //     expect(result.samples).toHaveLength(0);
-  //   });
+        await repository.save(entity);
 
-  //   it('should return an array of entity data if entities are found', async () => {
-  //     const entity = new SampleEntity();
-  //     entity.id = 1;
-
-  //     await repository.save(entity);
-
-  //     const result = await query.find({ skip: 0, take: 10 });
-
-  //     expect(result.samples).toHaveLength(1);
-  //     expect(result.samples[0].id).toEqual(entity.id);
-  //   });
-  // });
+        result = await query.find({ skip: 0, take: 10 });
+      });
+      it('should return an array of entity data if entities are found', async () => {
+        expect(result.samples).toHaveLength(1);
+        expect(result.samples[0].id).toEqual(entity.id.toString());
+      });
+    });
+  });
 });

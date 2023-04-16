@@ -34,11 +34,11 @@ describe('SampleHandler', () => {
         },
       },
     ];
-    const _testModules = await testModules(providers);
+    const {testModule} = await testModules(providers);
 
-    handler = _testModules.get(SampleHandler);
-    repository = _testModules.get(InjectionToken.SAMPLE_REPOSITORY);
-    factory = _testModules.get(SampleFactory);
+    handler = testModule.get(SampleHandler);
+    repository = testModule.get(InjectionToken.SAMPLE_REPOSITORY);
+    factory = testModule.get(SampleFactory);
   });
 
   describe('execute', () => {

@@ -3,131 +3,97 @@ import { SampleRepositoryImplement } from './SampleRepositoryImplement';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { nestAppForTest, testModules } from '../../../../libs/Testing';
 import { writeConnection } from '../../../../libs/DatabaseModule';
-import { SampleAggregate } from '../../domain/aggregate/Sample';
+import { Sample, SampleAggregate } from '../../domain/aggregate/Sample';
 import { EventPublisher } from '@nestjs/cqrs';
-import { InjectionToken } from '../../application/InjectionToken';
-import { Repository } from 'typeorm';
-import { Provider } from '@nestjs/common';
+import { INestApplication, Provider } from '@nestjs/common';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleQueryImplement } from '../query/SampleQueryImplement';
+import { TestingModule } from '@nestjs/testing';
 
 describe('SampleRepositoryImplement', () => {
+  let query: SampleQueryImplement;
   let repository: SampleRepository;
-  let publisher: EventPublisher;
-  let repo: Repository<SampleEntity>;
+  let testConnection: { testModule: TestingModule; app: INestApplication };
 
   beforeAll(async () => {
     await nestAppForTest();
     const providers: Provider[] = [
       SampleFactory,
-      {
-        provide: InjectionToken.SAMPLE_REPOSITORY,
-        useClass: SampleRepositoryImplement,
-      },
+      SampleQueryImplement,
+      SampleRepositoryImplement,
       {
         provide: EventPublisher,
         useValue: {
-          mergeObjectContext: jest.fn(),
+          mergeObjectContext: (properties) => {
+            return new SampleAggregate(properties);
+          },
         },
       },
     ];
-    const testModule = await testModules(providers);
+    testConnection = await testModules(providers);
 
-    publisher = testModule.get<EventPublisher>(EventPublisher);
-    repository = testModule.get<SampleRepositoryImplement>(
-      InjectionToken.SAMPLE_REPOSITORY,
-    );
+    query = testConnection.testModule.get(SampleQueryImplement);
+    repository = testConnection.testModule.get(SampleRepositoryImplement);
+    await writeConnection.manager.delete(SampleEntity, {});
   });
 
-  afterEach(() => {
-    jest.resetAllMocks(); // reset all mocked functions after each test
+  afterEach(async () => {
+    await writeConnection.manager.delete(SampleEntity, {});
   });
 
   describe('save', () => {
-    it('should save a single sample entity', async () => {
-      repo = writeConnection.manager.getRepository(SampleEntity);
-      const sampleData = {
-        id: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-      };
-
-      const newSample = new SampleAggregate(sampleData);
-      jest.spyOn(repo, 'save').mockReturnValue(Promise.resolve(sampleData));
-      jest
-        .spyOn(repo, 'findOneBy')
-        .mockReturnValue(Promise.resolve(sampleData));
-      jest.spyOn(publisher, 'mergeObjectContext').mockReturnValue(newSample);
-
-      await repository.save(newSample);
-
-      const savedEntity = await repository.findById(1);
-      expect(savedEntity).toEqual(newSample);
+    afterEach(async () => {
+      await writeConnection.manager.delete(SampleEntity, {});
+    });
+    describe('saves a single entity', () => {
+      let entities: SampleEntity[];
+      beforeAll(async () => {
+        const data = {
+          id: 1,
+        } as unknown as SampleAggregate;
+        await repository.save(data);
+        entities = await writeConnection.manager.find(SampleEntity);
+      });
+      it('saved successfully', async () => {
+        expect(entities[0].id).toEqual('1');
+      });
     });
 
-    it('should save multiple sample entities', async () => {
-      repo = writeConnection.manager.getRepository(SampleEntity);
-      const samples = [
-        {
-          id: 2,
-          createdAt: new Date('2023-04-12T01:53:00.724Z'),
-          updatedAt: new Date('2023-04-12T01:53:00.724Z'),
-          deletedAt: null,
-        },
-        {
-          id: 3,
-          createdAt: new Date('2023-04-12T01:53:00.724Z'),
-          updatedAt: new Date('2023-04-12T01:53:00.724Z'),
-          deletedAt: null,
-        },
-      ];
-
-      const expected = samples.map(
-        ({ id, createdAt, updatedAt, deletedAt }) => ({
-          id,
-          createdAt: createdAt.toISOString(),
-          updatedAt: updatedAt.toISOString(),
-          deletedAt,
-        }),
-      );
-
-      const saveMock = jest.fn().mockReturnValue(expected);
-      jest.spyOn(repo, 'save').mockImplementation(saveMock);
-
-      const newSamples = samples.map((sample) => new SampleAggregate(sample));
-
-      await repository.save(newSamples as SampleAggregate[]);
-
-      expect(saveMock).toHaveBeenCalledTimes(1);
-      expect(saveMock).toHaveBeenCalledWith(expected);
+    describe('saves multiple entities', () => {
+      let entities: SampleEntity[];
+      beforeAll(async () => {
+        const data = [{ id: 1 }, { id: 2 }] as unknown as SampleAggregate[];
+        await repository.save(data);
+        entities = await writeConnection.manager.find(SampleEntity);
+      });
+      it('saved successfully', async () => {
+        expect(entities[0].id).toEqual('1');
+        expect(entities[1].id).toEqual('2');
+      });
     });
   });
 
   describe('findById', () => {
-    it('should return null if entity does not exist', async () => {
-      repo = writeConnection.manager.getRepository(SampleEntity);
-      jest.spyOn(repo, 'findOneBy').mockReturnValue(Promise.resolve(null));
-      const result = await repository.findById(9999);
-
-      expect(result).toBeNull();
+    describe('returns null if entity is not found', () => {
+      let entity: Sample | null;
+      beforeAll(async () => {
+        entity = await repository.findById(1);
+      });
+      it('should return null', async () => {
+        expect(entity).toBeNull();
+      });
     });
 
-    it('should return sample if entity exists', async () => {
-      const entity = new SampleEntity();
-      entity.id = 4;
-      entity.createdAt = new Date('2023-04-12T01:53:00.724Z');
-      entity.updatedAt = new Date('2023-04-12T01:53:00.724Z');
-      entity.deletedAt = null;
-      repo = writeConnection.manager.getRepository(SampleEntity);
-      const newSample = new SampleAggregate(entity);
-
-      jest.spyOn(repo, 'save').mockResolvedValue(entity);
-      jest.spyOn(repo, 'findOneBy').mockReturnValue(Promise.resolve(entity));
-      jest.spyOn(publisher, 'mergeObjectContext').mockReturnValue(newSample);
-
-      const result = await repository.findById(4);
-
-      expect(result).toEqual(newSample);
+    describe('returns the entity with the given id', () => {
+      let entity: Sample | null;
+      beforeAll(async () => {
+        const data = { id: 1 } as unknown as SampleAggregate;
+        await repository.save(data);
+        entity = await repository.findById(1);
+      });
+      it('id is matching', async () => {
+        expect(entity?.compareId(1)).toBeTruthy;
+      });
     });
   });
 });
