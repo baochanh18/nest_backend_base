@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:up": "docker-compose -f docker-compose.yml up -d",
     "docker:down": "docker-compose -f docker-compose.yml down",
-    "migration:generate": "npx ts-node ./node_modules/.bin/typeorm migration:generate -d libs/DatabaseSource.ts src/RDS/migrations/$npm_config_name",
+    "migration:generate": "npx ts-node ./node_modules/.bin/typeorm migration:generate -d libs/DatabaseSource.ts migrations/$npm_config_name",
     "migration:run": "npx ts-node ./node_modules/.bin/typeorm migration:run -d libs/DatabaseSource.ts",
     "migration:revert": "npx ts-node ./node_modules/.bin/typeorm migration:revert -d libs/DatabaseSource.ts",
     "migration:run:test": "DATABASE_NAME=disney_test npx ts-node ./node_modules/.bin/typeorm migration:run -d libs/DatabaseSource.ts",

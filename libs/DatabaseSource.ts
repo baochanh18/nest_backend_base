@@ -16,7 +16,7 @@ export const connectionSource = {
   cache: true,
   timezone: 'Z',
   entities: ['src/**/infrastructure/entity/*.ts'],
-  migrations: ['src/RDS/migrations/*.ts'],
+  migrations: ['migrations/*.ts'],
   namingStrategy: new SnakeNamingStrategy(),
 };
 
