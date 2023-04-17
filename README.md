@@ -99,4 +99,3 @@ Esa document
 - Docker compose
 - CQRS
 - DDD
-- Micro Services
