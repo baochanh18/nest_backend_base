@@ -69,6 +69,12 @@ class Configuration {
   @IsString()
   readonly DOCUMENT_DATABASE_PASSWORD = process.env.MONGODB_PASSWORD as string || 'password';
 
+  @IsString()
+  readonly REDIS_HOST = process.env.REDIS_HOST as string || 'localhost';
+
+  @IsInt()
+  readonly REDIS_PORT = Number(process.env.REDIS_PORT) || 6379;
+
   constructor() {
     const error = validateSync(this);
     if (!error.length) return;

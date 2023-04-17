@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { connectionSource } from './DatabaseSource';
 import { documentDbConnection } from './DocumentDBModule';
+import { RedisModule } from './RedisModule';
 
 interface WriteConnection {
   readonly startTransaction: (
@@ -52,7 +53,7 @@ class DatabaseService implements OnModuleInit, OnModuleDestroy {
     await this.dataSource.initialize();
     const [writeQueryRunner, manager] = await Promise.all([
       this.dataSource.createQueryRunner(),
-      this.dataSource.manager
+      this.dataSource.manager,
     ]);
     writeConnection = writeQueryRunner;
     readConnection = manager;
@@ -74,6 +75,6 @@ class DatabaseService implements OnModuleInit, OnModuleDestroy {
 @Global()
 @Module({
   providers: [DatabaseService],
-  imports: [documentDbConnection],
+  imports: [documentDbConnection, RedisModule],
 })
 export class DatabaseModule {}
