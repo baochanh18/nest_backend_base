@@ -1,73 +1,69 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Project Title
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Describe your project in a few sentences.
 
 ## Installation
 
-```bash
-$ npm install
+To install the project, follow these steps:
+
+1. Clone the repository.
+2. Install dependencies with `npm install`.
+
+## Scripts
+
+This project includes several scripts that you can use to run various tasks:
+
+- `build`: Builds the project using Nest.
+- `format`: Formats the TypeScript source code using Prettier.
+- `start`: Starts the project using Nest.
+- `start:dev`: Starts the project using Nest in development mode with file watching enabled.
+- `start:debug`: Starts the project using Nest in debug mode with file watching enabled.
+- `start:prod`: Starts the compiled production version of the project.
+- `lint`: Lints the TypeScript source code using ESLint.
+- `test`: Runs the Jest test suite with some environment variables set.
+- `test:watch`: Runs the Jest test suite and watches for changes.
+- `test:cov`: Runs the Jest test suite and generates a coverage report.
+- `test:debug`: Runs the Jest test suite in debug mode for debugging tests.
+- `test:e2e`: Runs the Jest end-to-end (e2e) test suite with a custom configuration file.
+- `docker:up`: Starts the project containers using Docker Compose.
+- `docker:down`: Stops the project containers using Docker Compose.
+- `migration:generate`: Generates a new migration for TypeORM.
+- `migration:run`: Runs all pending migrations for TypeORM.
+- `migration:revert`: Reverts the most recently applied migration for TypeORM.
+- `migration:run:test`: Runs all pending migrations on the test database.
+
+You can run any of these scripts using `npm run` followed by the script name. For example:
+
 ```
+npm run build
+``` 
 
-## Running the app
+## Usage
 
-```bash
-# development
-$ npm run start
+Describe how to use the project and its features here.
 
-# watch mode
-$ npm run start:dev
+## API Documentation
 
-# production mode
-$ npm run start:prod
-```
+Document the available endpoints and their purposes here.
 
-## Test
+## Technologies Used
 
-```bash
-# unit tests
-$ npm run test
+- [Nest](https://nestjs.com/)
+- List any other technologies used in your project here.
 
-# e2e tests
-$ npm run test:e2e
+## Contributing
+If you would like to contribute to this project, please follow these guidelines:
 
-# test coverage
-$ npm run test:cov
-```
+1. Fork the repository.
+2. Create a new branch with a descriptive name (`new-feature`, `bug-fix`, etc.)
+3. Make your changes, committing regularly with descriptive commit messages.
+4. Push your changes to your branch.
+5. Submit a pull request.
 
-## Support
+## Credits
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Give credit where credit is due.
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+State the license under which your project is released.
