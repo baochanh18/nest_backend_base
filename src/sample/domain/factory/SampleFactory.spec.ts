@@ -2,7 +2,7 @@ import { EventPublisher } from '@nestjs/cqrs';
 import { INestApplication, Provider } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
 import { SampleFactory } from './SampleFactory';
-import { Sample, SampleAggregate } from '../aggregate/Sample';
+import { Sample, SampleAggregate, SampleProperties } from '../aggregate/Sample';
 import { testingConnection } from '../../../../libs/Testing';
 
 describe('SampleFactory', () => {
@@ -10,16 +10,19 @@ describe('SampleFactory', () => {
   let publisher: EventPublisher;
   let options: any;
   let properties: any;
-  let result: SampleAggregate;
+  let input: SampleProperties;
   let testModule: TestingModule;
   let appConnection: INestApplication;
   let sample: Sample;
+  let publisherSpy: jest.SpyInstance;
   const providers: Provider[] = [
     SampleFactory,
     {
       provide: EventPublisher,
       useValue: {
-        mergeObjectContext: jest.fn(),
+        mergeObjectContext: (properties: SampleProperties) => {
+          return new SampleAggregate(properties);
+        },
       },
     },
   ];
@@ -30,6 +33,7 @@ describe('SampleFactory', () => {
     appConnection = testConnection.app;
     factory = testModule.get<SampleFactory>(SampleFactory);
     publisher = testModule.get<EventPublisher>(EventPublisher);
+    publisherSpy = jest.spyOn(publisher, 'mergeObjectContext');
 
     options = { id: 1 };
     properties = {
@@ -38,20 +42,12 @@ describe('SampleFactory', () => {
       updatedAt: new Date(),
       deletedAt: null,
     };
-    result = new SampleAggregate({
+    input = {
       ...options,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
       deletedAt: null,
-    });
-  });
-
-  beforeEach(() => {
-    jest.spyOn(publisher, 'mergeObjectContext').mockReturnValue(result);
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
+    } as SampleProperties;
   });
 
   afterAll(async () => {
@@ -63,8 +59,8 @@ describe('SampleFactory', () => {
       sample = factory.create(options);
     });
     it('should create a new sample aggregate with the given options', () => {
-      expect(sample).toBe(result);
-      expect(publisher.mergeObjectContext).toHaveBeenCalledWith(result);
+      expect(sample.compareId(1)).toBeTruthy();
+      expect(publisherSpy).toHaveBeenCalledWith(new SampleAggregate(input));
     });
   });
 
@@ -73,8 +69,10 @@ describe('SampleFactory', () => {
       sample = factory.reconstitute(properties);
     });
     it('should reconstitute an existing sample aggregate from properties', () => {
-      expect(sample).toBe(result);
-      expect(publisher.mergeObjectContext).toHaveBeenCalledWith(result);
+      expect(sample.compareId(1)).toBeTruthy();
+      expect(publisherSpy).toHaveBeenCalledWith(
+        new SampleAggregate(properties),
+      );
     });
   });
 });
