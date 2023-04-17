@@ -71,6 +71,24 @@ npm run migration:generate --name="create_users_table"
 This will create a new file in the `migrations` directory with a timestamp and the name you provided. Inside this file, you can write your query to create or modify database tables.
 
 Make sure to replace `"Migration_name"` with a descriptive name for the migration you are creating. Also, ensure that your database is properly configured before running the migration command.
+
+### Testing
+To run all tests, use the following command:
+
+```
+npm run test
+```
+
+This will execute all test files in the `test` directory.
+
+To run a specific test file, provide the path to that file as an argument to the `npm run test` command. For example, to run tests only in the `user.test.js` file, you would use:
+
+```
+npm run test test/user.test.js
+```
+
+However, before running any tests, make sure that your testing database is created and properly configured. In this case, the testing database name should be `disney_test`. You can initialize this by running database migrations against the test environment.
+
 ## API Documentation
 
 Esa document
