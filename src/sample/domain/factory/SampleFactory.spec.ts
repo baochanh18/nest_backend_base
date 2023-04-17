@@ -1,8 +1,9 @@
 import { EventPublisher } from '@nestjs/cqrs';
+import { INestApplication, Provider } from '@nestjs/common';
+import { TestingModule } from '@nestjs/testing';
 import { SampleFactory } from './SampleFactory';
-import { SampleAggregate } from '../aggregate/Sample';
-import { testModules } from '../../../../libs/Testing';
-import { Provider } from '@nestjs/common';
+import { Sample, SampleAggregate } from '../aggregate/Sample';
+import { testingConnection } from '../../../../libs/Testing';
 
 describe('SampleFactory', () => {
   let factory: SampleFactory;
@@ -10,19 +11,23 @@ describe('SampleFactory', () => {
   let options: any;
   let properties: any;
   let result: SampleAggregate;
+  let testModule: TestingModule;
+  let appConnection: INestApplication;
+  let sample: Sample;
+  const providers: Provider[] = [
+    SampleFactory,
+    {
+      provide: EventPublisher,
+      useValue: {
+        mergeObjectContext: jest.fn(),
+      },
+    },
+  ];
 
   beforeAll(async () => {
-    const providers: Provider[] = [
-      SampleFactory,
-      {
-        provide: EventPublisher,
-        useValue: {
-          mergeObjectContext: jest.fn(),
-        },
-      },
-    ];
-    const { testModule } = await testModules(providers);
-
+    const testConnection = await testingConnection(providers);
+    testModule = testConnection.testModule;
+    appConnection = testConnection.app;
     factory = testModule.get<SampleFactory>(SampleFactory);
     publisher = testModule.get<EventPublisher>(EventPublisher);
 
@@ -49,23 +54,25 @@ describe('SampleFactory', () => {
     jest.resetAllMocks();
   });
 
-  describe('create', () => {
-    it('should create a new sample aggregate with the given options', () => {
-      // Act
-      const sample = factory.create(options);
+  afterAll(async () => {
+    await appConnection.close();
+  });
 
-      // Assert
+  describe('create', () => {
+    beforeAll(() => {
+      sample = factory.create(options);
+    });
+    it('should create a new sample aggregate with the given options', () => {
       expect(sample).toBe(result);
       expect(publisher.mergeObjectContext).toHaveBeenCalledWith(result);
     });
   });
 
   describe('reconstitute', () => {
+    beforeAll(() => {
+      sample = factory.reconstitute(properties);
+    });
     it('should reconstitute an existing sample aggregate from properties', () => {
-      // Act
-      const sample = factory.reconstitute(properties);
-
-      // Assert
       expect(sample).toBe(result);
       expect(publisher.mergeObjectContext).toHaveBeenCalledWith(result);
     });

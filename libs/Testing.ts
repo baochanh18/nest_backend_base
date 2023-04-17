@@ -13,7 +13,7 @@ export const nestAppForTest = async () => {
   return app;
 };
 
-export const testModules = async (providers: Provider[]) => {
+export const testingConnection = async (providers: Provider[]) => {
   const imports = [DatabaseModule];
   const moduleMetadata: ModuleMetadata = {
     providers: [...providers],

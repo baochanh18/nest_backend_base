@@ -7,7 +7,12 @@ describe('SampleDomainService', () => {
 
   beforeAll(() => {
     service = new SampleDomainService();
-    sample = { sampleErrorEvent: jest.fn() } as unknown as Sample;
+    sample = {
+      sampleErrorEvent: jest.fn(),
+      compareId: jest.fn(),
+      sampleEvent: jest.fn(),
+      commit: jest.fn(),
+    };
   });
 
   describe('checkId', () => {

@@ -83,7 +83,8 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.2.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "class-transformer": "git+https://airClosetDev:3c8d59ccd2dcb6aa4e96887eb4a6bb20b023c56a@github.com/air-closet/class-transformer.git"
   },
   "jest": {
     "moduleFileExtensions": [

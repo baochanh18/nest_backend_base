@@ -1,6 +1,6 @@
-import { TestingModule } from '@nestjs/testing';
 import { EventPublisher } from '@nestjs/cqrs';
 import { INestApplication, Provider } from '@nestjs/common';
+import { TestingModule } from '@nestjs/testing';
 
 import { Repository } from 'typeorm';
 import { writeConnection } from '../../../../libs/DatabaseModule';
@@ -8,36 +8,39 @@ import { SampleEntity } from '../entity/Sample';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from './SampleQueryImplement';
 import { SampleRepositoryImplement } from '../repository/SampleRepositoryImplement';
-import { testModules } from '../../../../libs/Testing';
+import { testingConnection } from '../../../../libs/Testing';
 import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
+import { sampleData } from './testdata';
 
 describe('SampleQueryImplement', () => {
   let query: SampleQueryImplement;
   let repository: Repository<SampleEntity>;
-  let testConnection: { testModule: TestingModule; app: INestApplication };
-
-  beforeAll(async () => {
-    const providers: Provider[] = [
-      SampleQueryImplement,
-      SampleRepositoryImplement,
-      SampleFactory,
-      {
-        provide: EventPublisher,
-        useValue: {
-          mergeObjectContext: jest.fn(),
-        },
+  let testModule: TestingModule;
+  let appConnection: INestApplication;
+  const providers: Provider[] = [
+    SampleQueryImplement,
+    SampleRepositoryImplement,
+    SampleFactory,
+    {
+      provide: EventPublisher,
+      useValue: {
+        mergeObjectContext: jest.fn(),
       },
-    ];
-    testConnection = await testModules(providers);
-
-    query = testConnection.testModule.get(SampleQueryImplement);
-    repository = testConnection.testModule.get(SampleRepositoryImplement);
+    },
+  ];
+  beforeAll(async () => {
+    const testConnection = await testingConnection(providers);
+    testModule = testConnection.testModule;
+    appConnection = testConnection.app;
+    query = testModule.get(SampleQueryImplement);
+    repository = testModule.get(SampleRepositoryImplement);
     await writeConnection.manager.delete(SampleEntity, {});
+    await repository.save(sampleData);
   });
 
   afterAll(async () => {
     await writeConnection.manager.delete(SampleEntity, {});
-    await testConnection.app.close();
+    await appConnection.close();
   });
 
   describe('findById', () => {
@@ -52,18 +55,12 @@ describe('SampleQueryImplement', () => {
     });
 
     describe('should return entity data if entity is found', () => {
-      let entity: SampleEntity;
       beforeAll(async () => {
-        entity = new SampleEntity();
-        entity.id = 1;
-
-        await repository.save(entity);
-
         result = await query.findById(1);
       });
       it('expect result not null', () => {
         expect(result).not.toBeNull();
-        expect(result?.id).toEqual(entity.id.toString());
+        expect(result?.id).toEqual(sampleData[0].id.toString());
       });
     });
   });
@@ -84,18 +81,13 @@ describe('SampleQueryImplement', () => {
 
     describe('should return an array of entity data if entities are found', () => {
       let result;
-      let entity: SampleEntity;
       beforeAll(async () => {
-        entity = new SampleEntity();
-        entity.id = 1;
-
-        await repository.save(entity);
-
+        await repository.save(sampleData);
         result = await query.find({ skip: 0, take: 10 });
       });
       it('should return an array of entity data if entities are found', async () => {
         expect(result.samples).toHaveLength(1);
-        expect(result.samples[0].id).toEqual(entity.id.toString());
+        expect(result.samples[0].id).toEqual(sampleData[0].id.toString());
       });
     });
   });
