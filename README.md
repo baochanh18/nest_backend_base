@@ -2,14 +2,18 @@
 
 This is sample Project
 
+## Requirements
+- Node.js v18.0 or later
+- npm (normally comes with Node.js)
 ## Installation
 
 To install the project, follow these steps:
 
-1. Clone the repository.
-2. Install dependencies with `npm install`.
-3. Start app with `npm run docker:up`.
-4. Generate migraiton with `npm run migration:run`.
+1. Clone the repository: git clone git@github.com:baochanh18/nest_backend_base.git
+2. Go into the project root directory: cd nest_backend_base
+3. Install dependencies with `npm install`.
+4. Start app with `npm run docker:up`.
+5. Generate migraiton with `npm run migration:run`.
 
 ## Scripts
 
