@@ -9,7 +9,7 @@ To install the project, follow these steps:
 1. Clone the repository.
 2. Install dependencies with `npm install`.
 3. Start app with `npm run docker:up`.
-4. Generate migraiton with `migration:run`.
+4. Generate migraiton with `npm run migration:run`.
 
 ## Scripts
 
