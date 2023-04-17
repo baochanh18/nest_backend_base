@@ -1,13 +1,19 @@
 # Project Title
 
-Describe your project in a few sentences.
+This is sample Project
 
+## Requirements
+- Node.js v18.0 or later
+- npm (normally comes with Node.js)
 ## Installation
 
 To install the project, follow these steps:
 
-1. Clone the repository.
-2. Install dependencies with `npm install`.
+1. Clone the repository: `git clone git@github.com:baochanh18/nest_backend_base.git`
+2. Go into the project root directory: `cd nest_backend_base`
+3. Install dependencies with `npm install`.
+4. Start app with `npm run docker:up`.
+5. Generate migraiton with `npm run migration:run`.
 
 ## Scripts
 
@@ -31,39 +37,69 @@ This project includes several scripts that you can use to run various tasks:
 - `migration:run`: Runs all pending migrations for TypeORM.
 - `migration:revert`: Reverts the most recently applied migration for TypeORM.
 - `migration:run:test`: Runs all pending migrations on the test database.
+- `migration:revert:test`: Reverts the most recently applied migration on the test database for TypeORM.
 
 You can run any of these scripts using `npm run` followed by the script name. For example:
 
 ```
 npm run build
-``` 
+```
 
 ## Usage
+### Docker
+To start the project containers, run:
 
-Describe how to use the project and its features here.
+```
+npm run docker:up
+```
+
+This will start the containers in detached mode. You can then access the project at `http://localhost:4000`.
+
+To stop the project containers, run:
+
+```
+npm run docker:down
+```
+
+This will stop and remove the containers, as well as any data volumes defined in the `docker-compose.yml` file.
+
+Make sure that you have followed the installation steps mentioned in the readme before running these commands.
+
+### Migration
+Here's an example of how to generate a migration using the provided script:
+
+```
+npm run migration:generate --name="create_users_table"
+```
+
+This will create a new file in the `migrations` directory with a timestamp and the name you provided. Inside this file, you can write your query to create or modify database tables.
+
+Make sure to replace `"Migration_name"` with a descriptive name for the migration you are creating. Also, ensure that your database is properly configured before running the migration command.
+
+### Testing
+To run all tests, use the following command:
+
+```
+npm run test
+```
+
+This will execute all test files in the `test` directory.
+
+To run a specific test file, provide the path to that file as an argument to the `npm run test` command. For example, to run tests only in the `user.test.js` file, you would use:
+
+```
+npm run test test/user.test.js
+```
+
+However, before running any tests, make sure that your testing database is created and properly configured. In this case, the testing database name should be `disney_test`. You can initialize this by running database migrations against the test environment.
 
 ## API Documentation
 
-Document the available endpoints and their purposes here.
+Esa document
 
 ## Technologies Used
 
 - [Nest](https://nestjs.com/)
-- List any other technologies used in your project here.
-
-## Contributing
-If you would like to contribute to this project, please follow these guidelines:
-
-1. Fork the repository.
-2. Create a new branch with a descriptive name (`new-feature`, `bug-fix`, etc.)
-3. Make your changes, committing regularly with descriptive commit messages.
-4. Push your changes to your branch.
-5. Submit a pull request.
-
-## Credits
-
-Give credit where credit is due.
-
-## License
-
-State the license under which your project is released.
+- Docker compose
+- CQRS
+- DDD
