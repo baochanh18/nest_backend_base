@@ -1,7 +1,7 @@
 import { SampleEntity } from '../entity/Sample';
 import { SampleRepositoryImplement } from './SampleRepositoryImplement';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
-import { testingConnection } from '../../../../libs/Testing';
+import { testingConfigure } from '../../../../libs/Testing';
 import { writeConnection } from '../../../../libs/DatabaseModule';
 import { Sample, SampleAggregate } from '../../domain/aggregate/Sample';
 import { EventPublisher } from '@nestjs/cqrs';
@@ -9,13 +9,13 @@ import { INestApplication, Provider } from '@nestjs/common';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from '../query/SampleQueryImplement';
 import { TestingModule } from '@nestjs/testing';
-import { multipleSampleData, singleSampleData } from './testdata';
+import { sampleData } from './testdata';
 
 describe('SampleRepositoryImplement', () => {
   let query: SampleQueryImplement;
   let repository: SampleRepository;
   let testModule: TestingModule;
-  let appConnection: INestApplication;
+  let app: INestApplication;
   const providers: Provider[] = [
     SampleFactory,
     SampleQueryImplement,
@@ -30,9 +30,9 @@ describe('SampleRepositoryImplement', () => {
     },
   ];
   beforeAll(async () => {
-    const testConnection = await testingConnection(providers);
+    const testConnection = await testingConfigure(providers);
     testModule = testConnection.testModule;
-    appConnection = testConnection.app;
+    app = testConnection.app;
     query = testModule.get(SampleQueryImplement);
     repository = testModule.get(SampleRepositoryImplement);
     await writeConnection.manager.delete(SampleEntity, {});
@@ -43,7 +43,7 @@ describe('SampleRepositoryImplement', () => {
   });
 
   afterAll(async () => {
-    await appConnection.close();
+    await app.close();
   });
 
   describe('save', () => {
@@ -53,7 +53,7 @@ describe('SampleRepositoryImplement', () => {
     describe('saves a single entity', () => {
       let entities: SampleEntity[];
       beforeAll(async () => {
-        await repository.save(singleSampleData);
+        await repository.save(sampleData[0]);
         entities = await writeConnection.manager.find(SampleEntity);
       });
       it('saved to DB successfully', () => {
@@ -64,7 +64,7 @@ describe('SampleRepositoryImplement', () => {
     describe('saves multiple entities', () => {
       let entities: SampleEntity[];
       beforeAll(async () => {
-        await repository.save(multipleSampleData);
+        await repository.save(sampleData);
         entities = await writeConnection.manager.find(SampleEntity);
       });
       it('saved to DB successfully', () => {
@@ -88,7 +88,7 @@ describe('SampleRepositoryImplement', () => {
     describe('returns the entity with the given id', () => {
       let entity: Sample | null;
       beforeAll(async () => {
-        await repository.save(singleSampleData);
+        await repository.save(sampleData[0]);
         entity = await repository.findById(1);
       });
       it('id is matching', () => {

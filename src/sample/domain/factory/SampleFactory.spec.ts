@@ -3,7 +3,7 @@ import { INestApplication, Provider } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
 import { SampleFactory } from './SampleFactory';
 import { Sample, SampleAggregate, SampleProperties } from '../aggregate/Sample';
-import { testingConnection } from '../../../../libs/Testing';
+import { testingConfigure } from '../../../../libs/Testing';
 
 describe('SampleFactory', () => {
   let factory: SampleFactory;
@@ -12,7 +12,7 @@ describe('SampleFactory', () => {
   let properties: any;
   let input: SampleProperties;
   let testModule: TestingModule;
-  let appConnection: INestApplication;
+  let app: INestApplication;
   let sample: Sample;
   let publisherSpy: jest.SpyInstance;
   const providers: Provider[] = [
@@ -28,9 +28,9 @@ describe('SampleFactory', () => {
   ];
 
   beforeAll(async () => {
-    const testConnection = await testingConnection(providers);
+    const testConnection = await testingConfigure(providers);
     testModule = testConnection.testModule;
-    appConnection = testConnection.app;
+    app = testConnection.app;
     factory = testModule.get<SampleFactory>(SampleFactory);
     publisher = testModule.get<EventPublisher>(EventPublisher);
     publisherSpy = jest.spyOn(publisher, 'mergeObjectContext');
@@ -51,7 +51,7 @@ describe('SampleFactory', () => {
   });
 
   afterAll(async () => {
-    await appConnection.close();
+    await app.close();
   });
 
   describe('create', () => {

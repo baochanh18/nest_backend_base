@@ -7,7 +7,7 @@ import { InjectionToken } from '../InjectionToken';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 
 import { SampleRepository } from '../../domain/repository/SampleRepository';
-import { testingConnection } from '../../../../libs/Testing';
+import { testingConfigure } from '../../../../libs/Testing';
 import { SampleRepositoryImplement } from '../../infrastructure/repository/SampleRepositoryImplement';
 import { EventPublisher } from '@nestjs/cqrs';
 
@@ -20,7 +20,7 @@ describe('SampleHandler', () => {
   let repository: SampleRepository;
   let factory: SampleFactory;
   let testModule: TestingModule;
-  let appConnection: INestApplication;
+  let app: INestApplication;
   const providers: Provider[] = [
     SampleHandler,
     SampleFactory,
@@ -37,16 +37,16 @@ describe('SampleHandler', () => {
   ];
 
   beforeAll(async () => {
-    const testConnection = await testingConnection(providers);
+    const testConnection = await testingConfigure(providers);
     testModule = testConnection.testModule;
-    appConnection = testConnection.app;
+    app = testConnection.app;
     handler = testModule.get(SampleHandler);
     repository = testModule.get(InjectionToken.SAMPLE_REPOSITORY);
     factory = testModule.get(SampleFactory);
   });
 
   afterAll(async () => {
-    await appConnection.close();
+    await app.close();
   });
 
   describe('execute', () => {
@@ -63,12 +63,16 @@ describe('SampleHandler', () => {
 
       executeResult = await handler.execute(command);
     });
-    it('should execute SampleCommand', () => {
-      expect(executeResult).toEqual(undefined);
+    it('Aggregate methods are executed', () => {
       expect(mockSample.compareId).toBeCalledTimes(1);
+      expect(mockSample.commit).toBeCalledTimes(1);
+    });
+    it('Execute result is as expected', () => {
+      expect(executeResult).toEqual(undefined);
+    });
+    it('findById function is called', () => {
       expect(repository.findById).toBeCalledTimes(1);
       expect(repository.findById).toBeCalledWith(1);
-      expect(mockSample.commit).toBeCalledTimes(1);
     });
   });
 });

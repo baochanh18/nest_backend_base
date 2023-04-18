@@ -2,24 +2,20 @@ import { EventPublisher } from '@nestjs/cqrs';
 import { INestApplication, Provider } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
 
-import { Repository } from 'typeorm';
 import { writeConnection } from '../../../../libs/DatabaseModule';
 import { SampleEntity } from '../entity/Sample';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from './SampleQueryImplement';
-import { SampleRepositoryImplement } from '../repository/SampleRepositoryImplement';
-import { testingConnection } from '../../../../libs/Testing';
+import { testingConfigure } from '../../../../libs/Testing';
 import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
 import { sampleData } from './testdata';
 
 describe('SampleQueryImplement', () => {
   let query: SampleQueryImplement;
-  let repository: Repository<SampleEntity>;
   let testModule: TestingModule;
-  let appConnection: INestApplication;
+  let app: INestApplication;
   const providers: Provider[] = [
     SampleQueryImplement,
-    SampleRepositoryImplement,
     SampleFactory,
     {
       provide: EventPublisher,
@@ -29,18 +25,17 @@ describe('SampleQueryImplement', () => {
     },
   ];
   beforeAll(async () => {
-    const testConnection = await testingConnection(providers);
+    const testConnection = await testingConfigure(providers);
     testModule = testConnection.testModule;
-    appConnection = testConnection.app;
+    app = testConnection.app;
     query = testModule.get(SampleQueryImplement);
-    repository = testModule.get(SampleRepositoryImplement);
     await writeConnection.manager.delete(SampleEntity, {});
-    await repository.save(sampleData);
+    await writeConnection.manager.save(SampleEntity, sampleData);
   });
 
   afterAll(async () => {
     await writeConnection.manager.delete(SampleEntity, {});
-    await appConnection.close();
+    await app.close();
   });
 
   describe('findById', () => {
@@ -82,7 +77,7 @@ describe('SampleQueryImplement', () => {
     describe('should return an array of entity data if entities are found', () => {
       let result;
       beforeAll(async () => {
-        await repository.save(sampleData);
+        await writeConnection.manager.save(SampleEntity, sampleData);
         result = await query.find({ skip: 0, take: 10 });
       });
       it('should return an array of entity data if entities are found', async () => {

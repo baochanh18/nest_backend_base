@@ -1,11 +1,7 @@
 import { plainToClass } from 'class-transformer/build/package';
 import { SampleAggregate } from '../../../domain/aggregate/Sample';
 
-const singleSampleData: SampleAggregate = plainToClass(SampleAggregate, {
-  id: 1,
-});
-
-const multipleSampleData: SampleAggregate[] = plainToClass(SampleAggregate, [
+const sampleData: SampleAggregate[] = plainToClass(SampleAggregate, [
   {
     id: 1,
   },
@@ -14,4 +10,4 @@ const multipleSampleData: SampleAggregate[] = plainToClass(SampleAggregate, [
   },
 ]);
 
-export { singleSampleData, multipleSampleData };
+export { sampleData };

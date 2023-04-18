@@ -1,12 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { Redis } from 'ioredis';
-import { RedisModule } from '../RedisModule';
+import { RedisModule } from '../../RedisModule';
+import { sampleKeyValue } from './testdata';
 
 describe('RedisModule', () => {
   let redisClient: Redis;
   let retrievedValue: string | null;
-  const key = 'test-key';
-  const value = 'test-value';
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -14,8 +13,8 @@ describe('RedisModule', () => {
     }).compile();
     redisClient = module.get<Redis>('REDIS_CLIENT');
 
-    await redisClient.set(key, value);
-    retrievedValue = await redisClient.get(key);
+    await redisClient.set(sampleKeyValue.key, sampleKeyValue.value);
+    retrievedValue = await redisClient.get(sampleKeyValue.key);
   });
 
   afterAll(async () => {
@@ -27,6 +26,6 @@ describe('RedisModule', () => {
   });
 
   it('should be able to get and set values in Redis', () => {
-    expect(retrievedValue).toBe(value);
+    expect(retrievedValue).toBe(sampleKeyValue.value);
   });
 });
