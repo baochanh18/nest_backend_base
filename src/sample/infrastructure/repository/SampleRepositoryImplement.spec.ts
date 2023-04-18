@@ -10,12 +10,15 @@ import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from '../query/SampleQueryImplement';
 import { TestingModule } from '@nestjs/testing';
 import { sampleData } from './testdata';
+import { InjectionToken } from '../../application/InjectionToken';
+import { Redis } from 'ioredis';
 
 describe('SampleRepositoryImplement', () => {
   let query: SampleQueryImplement;
   let repository: SampleRepository;
   let testModule: TestingModule;
   let app: INestApplication;
+  let redisClient: Redis;
   const providers: Provider[] = [
     SampleFactory,
     SampleQueryImplement,
@@ -28,6 +31,10 @@ describe('SampleRepositoryImplement', () => {
         },
       },
     },
+    {
+      provide: InjectionToken.REDIS_CLIENT,
+      useClass: Redis,
+    },
   ];
   beforeAll(async () => {
     const testConnection = await testingConfigure(providers);
@@ -35,7 +42,9 @@ describe('SampleRepositoryImplement', () => {
     app = testConnection.app;
     query = testModule.get(SampleQueryImplement);
     repository = testModule.get(SampleRepositoryImplement);
+    redisClient = testModule.get(InjectionToken.REDIS_CLIENT);
     await writeConnection.manager.delete(SampleEntity, {});
+    redisClient.flushall();
   });
 
   afterEach(async () => {
@@ -44,6 +53,7 @@ describe('SampleRepositoryImplement', () => {
 
   afterAll(async () => {
     await app.close();
+    redisClient.quit();
   });
 
   describe('save', () => {
@@ -93,6 +103,45 @@ describe('SampleRepositoryImplement', () => {
       });
       it('id is matching', () => {
         expect(entity?.compareId(1)).toBeTruthy;
+      });
+    });
+  });
+
+  describe('getCacheData', () => {
+    let result: string | null;
+    describe('should return null for non-existent key', () => {
+      beforeAll(async () => {
+        result = await repository.getCacheData('non-existent-key');
+      });
+      it('should return null', async () => {
+        expect(result).toBeNull();
+      });
+    });
+
+    describe('should return cached data for existing key', () => {
+      const key = 'test-key';
+      const value = 'test-value';
+      beforeAll(async () => {
+        await redisClient.set(key, value);
+        result = await repository.getCacheData(key);
+      });
+      it('should return expected value', async () => {
+        expect(result).toBe(value);
+      });
+    });
+  });
+
+  describe('setCacheData', () => {
+    describe('should set data in cache for valid key and value', () => {
+      const key = 'test-key';
+      const value = 'test-value';
+      let result: string | null;
+      beforeAll(async () => {
+        await repository.setCacheData(key, value);
+        result = await redisClient.get(key);
+      });
+      it('should return expected value', async () => {
+        expect(result).toBe(value);
       });
     });
   });

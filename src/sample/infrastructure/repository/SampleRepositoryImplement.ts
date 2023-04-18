@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { Redis } from 'ioredis';
 
 import { writeConnection } from '../../../../libs/DatabaseModule';
 
@@ -7,9 +8,12 @@ import { SampleEntity } from '../entity/Sample';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { Sample, SampleProperties } from '../../domain/aggregate/Sample';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { InjectionToken } from '../../application/InjectionToken';
 
 export class SampleRepositoryImplement implements SampleRepository {
   @Inject() private readonly sampleFactory: SampleFactory;
+  @Inject(InjectionToken.REDIS_CLIENT)
+  private readonly redisClient: Redis;
 
   async save(data: Sample | Sample[]): Promise<void> {
     const models = Array.isArray(data) ? data : [data];
@@ -24,6 +28,14 @@ export class SampleRepositoryImplement implements SampleRepository {
     return entity ? this.entityToModel(entity) : null;
   }
 
+  async getCacheData(key: string): Promise<string | null> {
+    return await this.redisClient.get(key);
+  }
+
+  async setCacheData(key: string, value: string): Promise<void> {
+    await this.redisClient.set(key, value);
+  }
+
   private modelToEntity(model: Sample): SampleEntity {
     const properties = JSON.parse(JSON.stringify(model)) as SampleProperties; // deep clone object
     return {
@@ -35,6 +47,6 @@ export class SampleRepositoryImplement implements SampleRepository {
   }
 
   private entityToModel(entity: SampleEntity): Sample {
-    return this.sampleFactory.reconstitute({...entity});
+    return this.sampleFactory.reconstitute({ ...entity });
   }
 }
