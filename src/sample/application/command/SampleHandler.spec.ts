@@ -1,5 +1,7 @@
 import { INestApplication, Provider } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
+import { EventPublisher } from '@nestjs/cqrs';
+import { Redis } from 'ioredis';
 
 import { SampleCommand } from './SampleCommand';
 import { SampleHandler } from './SampleHandler';
@@ -9,7 +11,6 @@ import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { testingConfigure } from '../../../../libs/Testing';
 import { SampleRepositoryImplement } from '../../infrastructure/repository/SampleRepositoryImplement';
-import { EventPublisher } from '@nestjs/cqrs';
 
 jest.mock('../../../../libs/Transactional', () => ({
   Transactional: () => () => undefined,
@@ -33,6 +34,10 @@ describe('SampleHandler', () => {
       useValue: {
         mergeObjectContext: jest.fn(),
       },
+    },
+    {
+      provide: InjectionToken.REDIS_CLIENT,
+      useClass: Redis,
     },
   ];
 
