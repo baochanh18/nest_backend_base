@@ -10,4 +10,9 @@ const sampleData: SampleAggregate[] = plainToClass(SampleAggregate, [
   },
 ]);
 
-export { sampleData };
+const sampleKeyValue = {
+  key: 'test-key',
+  value: 'test-value',
+};
+
+export { sampleData, sampleKeyValue };

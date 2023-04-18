@@ -9,7 +9,7 @@ import { INestApplication, Provider } from '@nestjs/common';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from '../query/SampleQueryImplement';
 import { TestingModule } from '@nestjs/testing';
-import { sampleData } from './testdata';
+import { sampleData, sampleKeyValue } from './testdata';
 import { InjectionToken } from '../../application/InjectionToken';
 import { Redis } from 'ioredis';
 
@@ -119,29 +119,25 @@ describe('SampleRepositoryImplement', () => {
     });
 
     describe('should return cached data for existing key', () => {
-      const key = 'test-key';
-      const value = 'test-value';
       beforeAll(async () => {
-        await redisClient.set(key, value);
-        result = await repository.getCacheData(key);
+        await redisClient.set(sampleKeyValue.key, sampleKeyValue.value);
+        result = await repository.getCacheData(sampleKeyValue.key);
       });
       it('should return expected value', async () => {
-        expect(result).toBe(value);
+        expect(result).toBe(sampleKeyValue.value);
       });
     });
   });
 
   describe('setCacheData', () => {
     describe('should set data in cache for valid key and value', () => {
-      const key = 'test-key';
-      const value = 'test-value';
       let result: string | null;
       beforeAll(async () => {
-        await repository.setCacheData(key, value);
-        result = await redisClient.get(key);
+        await repository.setCacheData(sampleKeyValue.key, sampleKeyValue.value);
+        result = await redisClient.get(sampleKeyValue.key);
       });
       it('should return expected value', async () => {
-        expect(result).toBe(value);
+        expect(result).toBe(sampleKeyValue.value);
       });
     });
   });
