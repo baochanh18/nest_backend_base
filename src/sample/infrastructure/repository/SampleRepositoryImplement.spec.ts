@@ -40,7 +40,12 @@ describe('SampleRepositoryImplement', () => {
     repository = testModule.get(SampleRepositoryImplement);
     redisClient = testModule.get(REDIS_CLIENT);
     await writeConnection.manager.delete(SampleEntity, {});
-    redisClient.flushall();
+    await redisClient.flushall();
+    const flattenedRecords = sampleKeyValues.flatMap((obj) => [
+      obj.key,
+      obj.value,
+    ]);
+    await redisClient.mset(flattenedRecords);
   });
 
   afterEach(async () => {
@@ -49,6 +54,7 @@ describe('SampleRepositoryImplement', () => {
 
   afterAll(async () => {
     await app.close();
+    redisClient.flushall();
     redisClient.quit();
   });
 
@@ -116,7 +122,6 @@ describe('SampleRepositoryImplement', () => {
 
     describe('should return cached data for existing key', () => {
       beforeAll(async () => {
-        await redisClient.set(sampleKeyValues[0].key, sampleKeyValues[0].value);
         result = await repository.getCacheData(sampleKeyValues[0].key);
       });
       it('should return expected value', async () => {
@@ -128,12 +133,14 @@ describe('SampleRepositoryImplement', () => {
   describe('setCacheData', () => {
     describe('should set data in cache for valid key and value', () => {
       let result: string | null;
+      const key = 'new-test-key';
+      const value = 'new-value';
       beforeAll(async () => {
-        await repository.setCacheData(sampleKeyValues[0].key, sampleKeyValues[0].value);
-        result = await redisClient.get(sampleKeyValues[0].key);
+        await repository.setCacheData(key, value);
+        result = await redisClient.get(key);
       });
       it('should return expected value', async () => {
-        expect(result).toBe(sampleKeyValues[0].value);
+        expect(result).toBe(value);
       });
     });
   });

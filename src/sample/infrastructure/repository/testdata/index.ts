@@ -14,11 +14,11 @@ const sampleKeyValues = [
   {
     key: 'test-key-1',
     value: 'test-value-1',
-   },
-   {
-     key: 'test-key-2',
-     value: 'test-value-2',
-   }
+  },
+  {
+    key: 'test-key-2',
+    value: 'test-value-2',
+  },
 ];
 
 export { sampleData, sampleKeyValues };

@@ -58,22 +58,21 @@ describe('SampleHandler', () => {
     let executeResult;
     beforeAll(async () => {
       factory.create = jest.fn().mockReturnValue(mockSample);
-      repository.findById = jest.fn().mockResolvedValue(null);
+      repository.save = jest.fn().mockResolvedValue(null);
 
       const command = new SampleCommand(1);
 
       executeResult = await handler.execute(command);
     });
     it('Aggregate methods are executed', () => {
-      expect(mockSample.compareId).toBeCalledTimes(1);
       expect(mockSample.commit).toBeCalledTimes(1);
     });
     it('Execute result is as expected', () => {
       expect(executeResult).toEqual(undefined);
     });
-    it('findById function is called', () => {
-      expect(repository.findById).toBeCalledTimes(1);
-      expect(repository.findById).toBeCalledWith(1);
+    it('save function is called', () => {
+      expect(repository.save).toBeCalledTimes(1);
+      expect(repository.save).toBeCalledWith(mockSample);
     });
   });
 });
