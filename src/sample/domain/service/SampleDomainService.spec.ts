@@ -2,20 +2,32 @@ import { Sample } from '../aggregate/Sample';
 import { SampleDomainService, CheckIdOptions } from './SampleDomainService';
 
 describe('SampleDomainService', () => {
+  let service: SampleDomainService;
+  let sample: Sample;
+
+  beforeAll(() => {
+    service = new SampleDomainService();
+    sample = {
+      sampleErrorEvent: jest.fn(),
+      compareId: jest.fn(),
+      sampleEvent: jest.fn(),
+      commit: jest.fn(),
+    };
+  });
+
   describe('checkId', () => {
-    it('should run checkId', () => {
-      const service = new SampleDomainService();
-
-      const sample = { sampleErrorEvent: jest.fn() } as unknown as Sample;
-
-      const options: CheckIdOptions = {
+    let options: CheckIdOptions;
+    beforeAll(() => {
+      options = {
         sample,
         receiveId: 1,
       };
 
-      expect(service.checkId(options)).toEqual(undefined);
-      expect(sample.sampleErrorEvent).toBeCalledTimes(1);
-      expect(sample.sampleErrorEvent).toBeCalledWith(options.receiveId);
+      service.checkId(options);
+    });
+    it('should run checkId', () => {
+      expect(sample.sampleErrorEvent).toHaveBeenCalledTimes(1);
+      expect(sample.sampleErrorEvent).toHaveBeenCalledWith(options.receiveId);
     });
   });
 });

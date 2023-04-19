@@ -1,90 +1,88 @@
-import { SampleQueryImplement } from './SampleQueryImplement';
-import { readConnection } from '../../../../libs/DatabaseModule';
-import { FindSamplesQuery } from '../../application/query/FindSamples/FindSamplesQuery';
-import { nestAppForTest } from '../../../../libs/Testing';
+import { EventPublisher } from '@nestjs/cqrs';
+import { INestApplication, Provider } from '@nestjs/common';
+import { TestingModule } from '@nestjs/testing';
+
+import { writeConnection } from '../../../../libs/DatabaseModule';
 import { SampleEntity } from '../entity/Sample';
+import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleQueryImplement } from './SampleQueryImplement';
+import { testingConfigure } from '../../../../libs/Testing';
+import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
+import { sampleData } from './testdata';
 
 describe('SampleQueryImplement', () => {
-  let sampleQuery: SampleQueryImplement;
-
+  let query: SampleQueryImplement;
+  let testModule: TestingModule;
+  let app: INestApplication;
+  const providers: Provider[] = [
+    SampleQueryImplement,
+    SampleFactory,
+    {
+      provide: EventPublisher,
+      useValue: {
+        mergeObjectContext: jest.fn(),
+      },
+    },
+  ];
   beforeAll(async () => {
-    await nestAppForTest();
-    sampleQuery = new SampleQueryImplement();
+    const testConnection = await testingConfigure(providers);
+    testModule = testConnection.testModule;
+    app = testConnection.app;
+    query = testModule.get(SampleQueryImplement);
+    await writeConnection.manager.delete(SampleEntity, {});
+    await writeConnection.manager.save(SampleEntity, sampleData);
   });
 
-  afterEach(async () => {
-    jest.resetAllMocks(); // reset all mocked functions after each test
+  afterAll(async () => {
+    await writeConnection.manager.delete(SampleEntity, {});
+    await app.close();
   });
 
   describe('findById', () => {
-    it('should return null if entity does not exist', async () => {
-      const repository = readConnection.getRepository(SampleEntity);
-      jest
-        .spyOn(repository, 'findOneBy')
-        .mockReturnValue(Promise.resolve(null));
-
-      const result = await sampleQuery.findById(1);
-
-      expect(result).toBeNull();
+    let result: FindSampleByIdResult | null;
+    describe('should return null if entity is not found', () => {
+      beforeAll(async () => {
+        result = await query.findById(1000);
+      });
+      it('expect result to be null', () => {
+        expect(result).toBeNull();
+      });
     });
 
-    it('should return entity data if entity exists', async () => {
-      const entityData = {
-        id: 1,
-        createdAt: new Date('2022-01-01T00:00:00Z'),
-        updatedAt: new Date('2022-01-01T00:00:00Z'),
-        deletedAt: null,
-      };
-
-      const repository = readConnection.getRepository(SampleEntity);
-      jest.spyOn(repository, 'findOneBy').mockReturnValue(
-        Promise.resolve({
-          ...entityData,
-        }),
-      );
-
-      const result = await sampleQuery.findById(entityData.id);
-
-      expect(result).toEqual(entityData);
+    describe('should return entity data if entity is found', () => {
+      beforeAll(async () => {
+        result = await query.findById(1);
+      });
+      it('expect result not null', () => {
+        expect(result).not.toBeNull();
+        expect(result?.id).toEqual(sampleData[0].id.toString());
+      });
     });
   });
 
   describe('find', () => {
-    it('should return empty array if no entities exist', async () => {
-      const repository = readConnection.getRepository(SampleEntity);
-      jest.spyOn(repository, 'find').mockReturnValue(Promise.resolve([]));
-
-      const options = {
-        skip: 1,
-        take: 1,
-      } as FindSamplesQuery;
-
-      const result = await sampleQuery.find(new FindSamplesQuery(options));
-
-      expect(result).toEqual({ samples: [] });
+    beforeAll(async () => {
+      await writeConnection.manager.delete(SampleEntity, {});
+    });
+    describe('should return an empty array if no entities are found', () => {
+      let result;
+      beforeAll(async () => {
+        result = await query.find({ skip: 0, take: 10 });
+      });
+      it('length equal 0', async () => {
+        expect(result.samples).toHaveLength(0);
+      });
     });
 
-    it('should return array of entities if entities exist', async () => {
-      const entityData = {
-        id: 1,
-        createdAt: new Date('2022-01-01T00:00:00Z'),
-        updatedAt: new Date('2022-01-01T00:00:00Z'),
-        deletedAt: null,
-      };
-      const repository = readConnection.getRepository(SampleEntity);
-      jest
-        .spyOn(repository, 'find')
-        .mockReturnValue(Promise.resolve([entityData]));
-
-      const options = {
-        skip: 1,
-        take: 1,
-      } as FindSamplesQuery;
-
-      const result = await sampleQuery.find(new FindSamplesQuery(options));
-
-      expect(result).toEqual({
-        samples: [{ id: 1 }],
+    describe('should return an array of entity data if entities are found', () => {
+      let result;
+      beforeAll(async () => {
+        await writeConnection.manager.save(SampleEntity, sampleData);
+        result = await query.find({ skip: 0, take: 10 });
+      });
+      it('should return an array of entity data if entities are found', async () => {
+        expect(result.samples).toHaveLength(1);
+        expect(result.samples[0].id).toEqual(sampleData[0].id.toString());
       });
     });
   });

@@ -1,10 +1,10 @@
 // migrations/mongo-migrate-config.js
-import { Config } from './src/Config';
+import { config } from './src/config';
 
-const mongoConfig = {
+const mongoconfig = {
   mongodb: {
     // Connection URI for your MongoDB instance
-    url: `mongodb://${Config.DOCUMENT_DATABASE_USER}:${Config.DOCUMENT_DATABASE_PASSWORD}@${Config.DOCUMENT_DATABASE_HOST}:${Config.DOCUMENT_DATABASE_PORT}/${Config.DOCUMENT_DATABASE_NAME}`,
+    url: `mongodb://${config.DOCUMENT_DATABASE_USER}:${config.DOCUMENT_DATABASE_PASSWORD}@${config.DOCUMENT_DATABASE_HOST}:${config.DOCUMENT_DATABASE_PORT}/${config.DOCUMENT_DATABASE_NAME}`,
 
     // Database name
     databaseName: 'disney',
@@ -23,4 +23,4 @@ const mongoConfig = {
   changelogCollectionName: 'changelog',
 };
 
-module.exports = mongoConfig;
+module.exports = mongoconfig;

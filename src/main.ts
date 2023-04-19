@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LoggingInterceptor } from 'libs/LoggingInterceptor';
 import { HttpExceptionFilter } from 'libs/HttpExceptionFilter';
 
-import { Config } from '../src/Config';
+import { Config } from './config';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 

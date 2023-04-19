@@ -1,11 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import { ModuleMetadata, Provider } from '@nestjs/common';
-import { SampleHandler } from '../src/sample/application/command/SampleHandler';
-import { SampleFactory } from '../src/sample/domain/factory/SampleFactory';
-import { InjectionToken } from '../src/sample/application/InjectionToken';
-import { EventPublisher } from '@nestjs/cqrs';
-import { SampleRepositoryImplement } from '../src/sample/infrastructure/repository/SampleRepositoryImplement';
+import { DatabaseModule } from './DatabaseModule';
+import { RedisModule } from './RedisModule';
 
 export const nestAppForTest = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,33 +14,13 @@ export const nestAppForTest = async () => {
   return app;
 };
 
-export const testModules = async () => {
-  const SampleRepoProvider: Provider = {
-    provide: InjectionToken.SAMPLE_REPOSITORY,
-    useClass: SampleRepositoryImplement,
+export const testingConfigure = async (providers: Provider[]) => {
+  const imports = [DatabaseModule, RedisModule];
+  const moduleMetadata: ModuleMetadata = {
+    providers: [...providers],
+    imports,
   };
-
-  const factoryProvider: Provider = {
-    provide: SampleFactory,
-    useValue: {},
-    useClass: SampleFactory,
-  };
-
-  const eventPublisher: Provider = {
-    provide: EventPublisher,
-    useValue: {
-      mergeObjectContext: jest.fn(),
-    },
-  };
-  const providers: Provider[] = [
-    SampleHandler,
-    SampleFactory,
-    SampleRepoProvider,
-    factoryProvider,
-    eventPublisher,
-  ];
-  const moduleMetadata: ModuleMetadata = { providers };
   const testModule = await Test.createTestingModule(moduleMetadata).compile();
-
-  return testModule;
+  const app = await testModule.createNestApplication().init();
+  return { testModule, app };
 };

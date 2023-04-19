@@ -7,10 +7,16 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RequestStorageMiddleware } from '../libs/RequestStorageMiddleware';
+import { SamplesModule } from './sample/SamplesModule';
+import { MessageModule } from '../libs/MessageModule';
+import { RedisModule } from '../libs/RedisModule';
 
 @Module({
   imports: [
+    RedisModule,
     DatabaseModule,
+    SamplesModule,
+    MessageModule,
     CacheModule.register({ isGlobal: true }),
     ThrottlerModule.forRoot(),
     ScheduleModule.forRoot(),

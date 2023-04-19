@@ -1,16 +1,12 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
-  Patch,
   Query,
   UseInterceptors,
   HttpStatus,
-  NotFoundException,
-  Headers,
 } from '@nestjs/common';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -20,11 +16,7 @@ import {
   ApiNotFoundResponse,
   ApiResponse,
   ApiTags,
-  // ApiUnauthorizedResponse,
-  // ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-
-// import { Auth, AuthorizedHeader } from 'libs/Auth';
 
 import { FindSamplesRequestQueryString } from './dto/FindSamplesRequestQueryString';
 import { SampleRequestDTO } from './dto/SampleRequestDTO';
@@ -36,8 +28,6 @@ import { ResponseDescription } from './ResponseDescription';
 import { SampleCommand } from '../application/command/SampleCommand';
 import { FindSampleByIdQuery } from '../application/query/FindSampleById/FindSampleByIdQuery';
 import { FindSamplesQuery } from '../application/query/FindSamples/FindSamplesQuery';
-
-// import { ErrorMessage } from 'src/sample/domain/ErrorMessage';
 
 @ApiTags('Samples')
 @Controller()
@@ -76,7 +66,6 @@ export class SamplesController {
     return { samples: await this.queryBus.execute(query) };
   }
 
-  // @Auth()
   @Get('samples/:sampleId')
   @UseInterceptors(CacheInterceptor)
   @ApiResponse({
@@ -90,11 +79,8 @@ export class SamplesController {
     description: ResponseDescription.INTERNAL_SERVER_ERROR,
   })
   async findSampleById(
-    // @Headers() header: AuthorizedHeader,
     @Param() param: FindSampleByIdRequestParam,
   ): Promise<FindSampleByIdResponseDTO> {
-    // if (header.accountId !== param.accountId)
-    //   throw new NotFoundException(ErrorMessage.ACCOUNT_IS_NOT_FOUND);
     return this.queryBus.execute(new FindSampleByIdQuery(param.id));
   }
 }

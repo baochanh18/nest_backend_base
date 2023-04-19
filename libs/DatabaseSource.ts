@@ -1,5 +1,7 @@
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { Config } from '../src/Config';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { Config } from '../src/config';
+import path from 'path';
 
 export const connectionSource = {
   name: 'default',
@@ -13,9 +15,10 @@ export const connectionSource = {
   password: Config.DATABASE_PASSWORD,
   synchronize: Config.DATABASE_SYNC,
   cache: true,
-  entities: [
-    'src/**/infrastructure/entity/!(Sample).ts',
-  ],
-  migrations: ['src/RDS/migrations/*.ts'],
+  timezone: 'Z',
+  entities: [path.dirname(__dirname) + '/src/**/infrastructure/entity/*.{ts,js}'],
+  migrations: [path.dirname(__dirname) + '/migrations/*.{ts,js}'],
   namingStrategy: new SnakeNamingStrategy(),
 };
+
+export default new DataSource(connectionSource as DataSourceOptions);
