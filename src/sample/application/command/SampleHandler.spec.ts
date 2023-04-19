@@ -35,10 +35,6 @@ describe('SampleHandler', () => {
         mergeObjectContext: jest.fn(),
       },
     },
-    {
-      provide: InjectionToken.REDIS_CLIENT,
-      useClass: Redis,
-    },
   ];
 
   beforeAll(async () => {

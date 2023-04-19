@@ -8,11 +8,11 @@ import { SampleEntity } from '../entity/Sample';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { Sample, SampleProperties } from '../../domain/aggregate/Sample';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
-import { InjectionToken } from '../../application/InjectionToken';
+import { REDIS_CLIENT } from '../../../../libs/RedisModule';
 
 export class SampleRepositoryImplement implements SampleRepository {
   @Inject() private readonly sampleFactory: SampleFactory;
-  @Inject(InjectionToken.REDIS_CLIENT)
+  @Inject(REDIS_CLIENT)
   private readonly redisClient: Redis;
 
   async save(data: Sample | Sample[]): Promise<void> {

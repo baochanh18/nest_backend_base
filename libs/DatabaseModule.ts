@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { connectionSource } from './DatabaseSource';
 import { documentDbConnection } from './DocumentDBModule';
-import { RedisModule } from './RedisModule';
 
 interface WriteConnection {
   readonly startTransaction: (
@@ -75,6 +74,6 @@ class DatabaseService implements OnModuleInit, OnModuleDestroy {
 @Global()
 @Module({
   providers: [DatabaseService],
-  imports: [documentDbConnection, RedisModule],
+  imports: [documentDbConnection],
 })
 export class DatabaseModule {}

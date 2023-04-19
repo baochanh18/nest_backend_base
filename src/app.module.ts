@@ -9,12 +9,14 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { RequestStorageMiddleware } from '../libs/RequestStorageMiddleware';
 import { SamplesModule } from './sample/SamplesModule';
 import { MessageModule } from '../libs/MessageModule';
+import { RedisModule } from '../libs/RedisModule';
 
 @Module({
   imports: [
+    RedisModule,
     DatabaseModule,
-    // SamplesModule,
-    // MessageModule,
+    SamplesModule,
+    MessageModule,
     CacheModule.register({ isGlobal: true }),
     ThrottlerModule.forRoot(),
     ScheduleModule.forRoot(),

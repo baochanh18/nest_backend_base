@@ -10,8 +10,8 @@ import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from '../query/SampleQueryImplement';
 import { TestingModule } from '@nestjs/testing';
 import { sampleData, sampleKeyValues } from './testdata';
-import { InjectionToken } from '../../application/InjectionToken';
 import { Redis } from 'ioredis';
+import { REDIS_CLIENT } from '../../../../libs/RedisModule';
 
 describe('SampleRepositoryImplement', () => {
   let query: SampleQueryImplement;
@@ -31,10 +31,6 @@ describe('SampleRepositoryImplement', () => {
         },
       },
     },
-    {
-      provide: InjectionToken.REDIS_CLIENT,
-      useClass: Redis,
-    },
   ];
   beforeAll(async () => {
     const testConnection = await testingConfigure(providers);
@@ -42,7 +38,7 @@ describe('SampleRepositoryImplement', () => {
     app = testConnection.app;
     query = testModule.get(SampleQueryImplement);
     repository = testModule.get(SampleRepositoryImplement);
-    redisClient = testModule.get(InjectionToken.REDIS_CLIENT);
+    redisClient = testModule.get(REDIS_CLIENT);
     await writeConnection.manager.delete(SampleEntity, {});
     redisClient.flushall();
   });

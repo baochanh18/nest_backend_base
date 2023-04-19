@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { Redis } from 'ioredis';
-import { RedisModule } from '../../RedisModule';
+import { REDIS_CLIENT, RedisModule } from '../../RedisModule';
 import { sampleKeyValue } from './testdata';
 
 describe('RedisModule', () => {
@@ -11,7 +11,7 @@ describe('RedisModule', () => {
     const module = await Test.createTestingModule({
       imports: [RedisModule],
     }).compile();
-    redisClient = module.get<Redis>('REDIS_CLIENT');
+    redisClient = module.get<Redis>(REDIS_CLIENT);
 
     await redisClient.set(sampleKeyValue.key, sampleKeyValue.value);
     retrievedValue = await redisClient.get(sampleKeyValue.key);

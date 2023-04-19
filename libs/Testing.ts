@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import { ModuleMetadata, Provider } from '@nestjs/common';
 import { DatabaseModule } from './DatabaseModule';
+import { RedisModule } from './RedisModule';
 
 export const nestAppForTest = async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,7 +15,7 @@ export const nestAppForTest = async () => {
 };
 
 export const testingConfigure = async (providers: Provider[]) => {
-  const imports = [DatabaseModule];
+  const imports = [DatabaseModule, RedisModule];
   const moduleMetadata: ModuleMetadata = {
     providers: [...providers],
     imports,
