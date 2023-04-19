@@ -8,6 +8,7 @@ import { InjectionToken } from '../InjectionToken';
 
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
+import { Sample } from '../../domain/aggregate/Sample';
 
 @CommandHandler(SampleCommand)
 export class SampleHandler implements ICommandHandler<SampleCommand, void> {
@@ -15,15 +16,17 @@ export class SampleHandler implements ICommandHandler<SampleCommand, void> {
   private readonly sampleRepository: SampleRepository;
   @Inject() private readonly sampleFactory: SampleFactory;
 
-  @Transactional()
   async execute(command: SampleCommand): Promise<void> {
     const sample = this.sampleFactory.create({
       ...command,
     });
 
-    if (sample.compareId(1)) {
-      await this.sampleRepository.findById(1);
-    }
+    await this.dbExecute(sample);
+  }
+
+  @Transactional()
+  private async dbExecute(sample: Sample): Promise<void> {
+    await this.sampleRepository.save(sample);
     sample.commit();
   }
 }

@@ -4,7 +4,7 @@ import { readConnection } from '../../../../libs/DatabaseModule';
 
 import { SampleEntity } from '../entity/Sample';
 
-import { SampleQuery } from '../../application/query/SampleQuery';
+import { SampleQuery } from '../../domain/queryRepository/SampleQuery';
 import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
 import { FindSamplesResult } from '../../application/query/FindSamples/FindSamplesResult';
 import { FindSamplesQuery } from '../../application/query/FindSamples/FindSamplesQuery';

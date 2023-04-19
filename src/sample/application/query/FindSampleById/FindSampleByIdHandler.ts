@@ -6,7 +6,7 @@ import {
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { InjectionToken } from '../../InjectionToken';
-import { SampleQuery } from '../SampleQuery';
+import { SampleQuery } from '../../../domain/queryRepository/SampleQuery';
 import { FindSampleByIdQuery } from './FindSampleByIdQuery';
 import { FindSampleByIdResult } from './FindSampleByIdResult';
 

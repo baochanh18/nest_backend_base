@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { InjectionToken } from '../../../application/InjectionToken';
-import { SampleQuery } from '../../../application/query/SampleQuery';
+import { SampleQuery } from '../../../domain/queryRepository/SampleQuery';
 import { FindSamplesQuery } from './FindSamplesQuery';
 import { FindSamplesResult } from './FindSamplesResult';
 

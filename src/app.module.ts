@@ -8,7 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RequestStorageMiddleware } from '../libs/RequestStorageMiddleware';
 import { SamplesModule } from './sample/SamplesModule';
-import { MessageModule } from '../libs/MessageModule';
+// import { MessageModule } from '../libs/MessageModule';
 import { RedisModule } from '../libs/RedisModule';
 
 @Module({
@@ -16,7 +16,7 @@ import { RedisModule } from '../libs/RedisModule';
     RedisModule,
     DatabaseModule,
     SamplesModule,
-    MessageModule,
+    // MessageModule,
     CacheModule.register({ isGlobal: true }),
     ThrottlerModule.forRoot(),
     ScheduleModule.forRoot(),
