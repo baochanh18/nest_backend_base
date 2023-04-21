@@ -1,4 +1,4 @@
-import { Sample } from '../aggregate/Sample';
+import { Sample } from '../aggregate/sample';
 import { SampleDomainService, CheckIdOptions } from './SampleDomainService';
 
 describe('SampleDomainService', () => {
@@ -11,6 +11,7 @@ describe('SampleDomainService', () => {
       sampleErrorEvent: jest.fn(),
       compareId: jest.fn(),
       sampleEvent: jest.fn(),
+      getSample: jest.fn(),
       commit: jest.fn(),
     };
   });

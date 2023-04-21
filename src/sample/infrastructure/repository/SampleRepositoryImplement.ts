@@ -6,12 +6,25 @@ import { writeConnection } from '../../../../libs/DatabaseModule';
 import { SampleEntity } from '../entity/Sample';
 
 import { SampleRepository } from '../../domain/repository/SampleRepository';
-import { Sample, SampleProperties } from '../../domain/aggregate/Sample';
+import {
+  Sample,
+  SampleAggregate,
+  SampleProperties,
+} from '../../domain/aggregate/sample';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { REDIS_CLIENT } from '../../../../libs/RedisModule';
+import { SampleDetailEntity } from '../entity/SampleDetail';
+import {
+  SampleDetail,
+  SampleDetailAggregate,
+  SampleDetailProperties,
+} from '../..//domain/aggregate/sampleDetail';
+import { SampleDetailFactory } from '../../domain/factory/SampleDetailFactory';
+import { SelectQueryBuilder } from 'typeorm';
 
 export class SampleRepositoryImplement implements SampleRepository {
   @Inject() private readonly sampleFactory: SampleFactory;
+  @Inject() private readonly sampleDetailFactory: SampleDetailFactory;
   @Inject(REDIS_CLIENT)
   private readonly redisClient: Redis;
 
@@ -22,9 +35,9 @@ export class SampleRepositoryImplement implements SampleRepository {
   }
 
   async findById(id: number): Promise<Sample | null> {
-    const entity = await writeConnection.manager
-      .getRepository(SampleEntity)
-      .findOneBy({ id });
+    const entity = await this.baseQuery()
+      .where(`sample.id = :id`, { id })
+      .getOne();
     return entity ? this.entityToModel(entity) : null;
   }
 
@@ -37,16 +50,41 @@ export class SampleRepositoryImplement implements SampleRepository {
   }
 
   private modelToEntity(model: Sample): SampleEntity {
-    const properties = JSON.parse(JSON.stringify(model)) as SampleProperties; // deep clone object
-    return {
-      ...properties,
-      id: properties.id,
-      createdAt: properties.createdAt,
-      deletedAt: properties.deletedAt,
-    };
+    const { sampleDetail, ...properties } = JSON.parse(
+      JSON.stringify(model),
+    ) as SampleProperties;
+    const entity = new SampleEntity();
+    Object.assign(entity, properties);
+
+    if (sampleDetail) {
+      const { id: detailId, ...detailProps } = JSON.parse(
+        JSON.stringify(sampleDetail),
+      ) as SampleDetailProperties;
+      const sampleDetailEntity = new SampleDetailEntity();
+      Object.assign(sampleDetailEntity, detailProps, {
+        id: detailId,
+        sampleId: entity.id,
+      });
+      entity.sampleDetail = sampleDetailEntity;
+    }
+
+    return entity;
   }
 
   private entityToModel(entity: SampleEntity): Sample {
-    return this.sampleFactory.reconstitute({ ...entity });
+    const { sampleDetail, ...properties } = entity;
+    const sampleDetailAggregate =
+      sampleDetail && this.sampleDetailFactory.create(sampleDetail);
+    return this.sampleFactory.reconstitute({
+      ...properties,
+      sampleDetail: sampleDetailAggregate,
+    });
+  }
+
+  private baseQuery(): SelectQueryBuilder<SampleEntity> {
+    return writeConnection.manager
+      .getRepository(SampleEntity)
+      .createQueryBuilder('sample')
+      .leftJoinAndSelect('sample.sampleDetail', 'sampleDetail');
   }
 }

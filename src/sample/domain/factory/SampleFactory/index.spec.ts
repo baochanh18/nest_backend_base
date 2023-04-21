@@ -1,9 +1,9 @@
 import { EventPublisher } from '@nestjs/cqrs';
 import { INestApplication, Provider } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
-import { SampleFactory } from './SampleFactory';
-import { Sample, SampleAggregate, SampleProperties } from '../aggregate/Sample';
-import { testingConfigure } from '../../../../libs/Testing';
+import { SampleFactory } from '.';
+import { Sample, SampleAggregate, SampleProperties } from '../../aggregate/sample';
+import { testingConfigure } from '../../../../../libs/Testing';
 
 describe('SampleFactory', () => {
   let factory: SampleFactory;

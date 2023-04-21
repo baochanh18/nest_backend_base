@@ -13,7 +13,7 @@ export const connectionSource = {
   database: Config.DATABASE_NAME,
   username: Config.DATABASE_USER,
   password: Config.DATABASE_PASSWORD,
-  synchronize: Config.DATABASE_SYNC,
+  synchronize: false,
   cache: true,
   timezone: 'Z',
   entities: [

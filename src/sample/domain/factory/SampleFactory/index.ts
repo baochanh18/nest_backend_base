@@ -1,10 +1,16 @@
 import { Inject } from '@nestjs/common';
 import { EventPublisher } from '@nestjs/cqrs';
 
-import { Sample, SampleAggregate, SampleProperties } from '../aggregate/Sample';
+import {
+  Sample,
+  SampleAggregate,
+  SampleProperties,
+} from '../../aggregate/sample';
+import { SampleDetailAggregate } from '../../aggregate/sampleDetail';
 
 type CreateSampleOptions = Readonly<{
   id: number;
+  sampleDetail: SampleDetailAggregate | null;
 }>;
 
 export class SampleFactory {

@@ -1,17 +1,21 @@
+import { plainToClass } from 'class-transformer/build/package';
+
 import { SampleEntity } from '../entity/Sample';
 import { SampleRepositoryImplement } from './SampleRepositoryImplement';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { testingConfigure } from '../../../../libs/Testing';
 import { writeConnection } from '../../../../libs/DatabaseModule';
-import { Sample, SampleAggregate } from '../../domain/aggregate/Sample';
+import { Sample, SampleAggregate } from '../../domain/aggregate/sample';
 import { EventPublisher } from '@nestjs/cqrs';
 import { INestApplication, Provider } from '@nestjs/common';
 import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from '../query/SampleQueryImplement';
 import { TestingModule } from '@nestjs/testing';
-import { sampleData, sampleKeyValues } from './testdata';
+import { sampleData, sampleKeyValues, updateSampleData } from './testdata';
 import { Redis } from 'ioredis';
 import { REDIS_CLIENT } from '../../../../libs/RedisModule';
+import { SampleDetailFactory } from '../../domain/factory/SampleDetailFactory';
+import { SampleDetailEntity } from '../entity/SampleDetail';
 
 describe('SampleRepositoryImplement', () => {
   let query: SampleQueryImplement;
@@ -21,6 +25,7 @@ describe('SampleRepositoryImplement', () => {
   let redisClient: Redis;
   const providers: Provider[] = [
     SampleFactory,
+    SampleDetailFactory,
     SampleQueryImplement,
     SampleRepositoryImplement,
     {
@@ -39,6 +44,7 @@ describe('SampleRepositoryImplement', () => {
     query = testModule.get(SampleQueryImplement);
     repository = testModule.get(SampleRepositoryImplement);
     redisClient = testModule.get(REDIS_CLIENT);
+    await writeConnection.manager.delete(SampleDetailEntity, {});
     await writeConnection.manager.delete(SampleEntity, {});
     await redisClient.flushall();
     const flattenedRecords = sampleKeyValues.flatMap((obj) => [
@@ -49,6 +55,7 @@ describe('SampleRepositoryImplement', () => {
   });
 
   afterEach(async () => {
+    await writeConnection.manager.delete(SampleDetailEntity, {});
     await writeConnection.manager.delete(SampleEntity, {});
   });
 
@@ -60,28 +67,79 @@ describe('SampleRepositoryImplement', () => {
 
   describe('save', () => {
     afterEach(async () => {
+      await writeConnection.manager.delete(SampleDetailEntity, {});
       await writeConnection.manager.delete(SampleEntity, {});
     });
     describe('saves a single entity', () => {
-      let entities: SampleEntity[];
-      beforeAll(async () => {
-        await repository.save(sampleData[0]);
-        entities = await writeConnection.manager.find(SampleEntity);
+      let entitiy: SampleEntity;
+      describe('insert a new record', () => {
+        beforeAll(async () => {
+          await repository.save(sampleData[0]);
+          entitiy = plainToClass(SampleEntity, await repository.findById(1));
+        });
+        it('saved to DB successfully', () => {
+          expect(entitiy.id).toEqual(1);
+          expect(entitiy.sampleDetail).not.toBeNull();
+          expect(entitiy.sampleDetail?.content).toEqual('test');
+        });
       });
-      it('saved to DB successfully', () => {
-        expect(entities[0].id).toEqual('1');
+
+      describe('updates an existing record', () => {
+        beforeAll(async () => {
+          await repository.save(updateSampleData[0]);
+          entitiy = plainToClass(SampleEntity, await repository.findById(1));
+        });
+        it('saved to DB successfully', () => {
+          expect(entitiy.id).toEqual(1);
+          expect(entitiy.sampleDetail).not.toBeNull();
+          expect(entitiy.sampleDetail?.content).toEqual('updated content 1');
+        });
       });
     });
 
     describe('saves multiple entities', () => {
       let entities: SampleEntity[];
-      beforeAll(async () => {
-        await repository.save(sampleData);
-        entities = await writeConnection.manager.find(SampleEntity);
+      describe('insert new records', () => {
+        beforeAll(async () => {
+          await repository.save(sampleData);
+          entities = await writeConnection.manager.find(SampleEntity, {
+            relations: ['sampleDetail'],
+          });
+        });
+        it('saved to DB successfully', () => {
+          expect(entities.length).toEqual(2);
+        });
+        it('1st record can saving relation table successfully', () => {
+          expect(entities[0].sampleDetail).not.toBeNull();
+          expect(entities[0].sampleDetail?.content).toEqual('test');
+        });
+        it('2nd record can saving relation table successfully', () => {
+          expect(entities[1].sampleDetail).not.toBeNull();
+          expect(entities[1].sampleDetail?.content).toEqual('testhoge');
+        });
       });
-      it('saved to DB successfully', () => {
-        expect(entities[0].id).toEqual('1');
-        expect(entities[1].id).toEqual('2');
+      describe('updates existing records', () => {
+        beforeAll(async () => {
+          await repository.save(updateSampleData);
+          entities = await writeConnection.manager.find(SampleEntity, {
+            relations: ['sampleDetail'],
+          });
+        });
+        it('saved to DB successfully', () => {
+          expect(entities.length).toEqual(2);
+        });
+        it('1st record can saving relation table successfully', () => {
+          expect(entities[0].sampleDetail).not.toBeNull();
+          expect(entities[0].sampleDetail?.content).toEqual(
+            'updated content 1',
+          );
+        });
+        it('2nd record can saving relation table successfully', () => {
+          expect(entities[1].sampleDetail).not.toBeNull();
+          expect(entities[1].sampleDetail?.content).toEqual(
+            'updated content 2',
+          );
+        });
       });
     });
   });

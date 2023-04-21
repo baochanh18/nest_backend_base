@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { SelectQueryBuilder } from 'typeorm';
 
 import { readConnection } from '../../../../libs/DatabaseModule';
 
@@ -12,30 +13,31 @@ import { FindSamplesQuery } from '../../application/query/FindSamples/FindSample
 @Injectable()
 export class SampleQueryImplement implements SampleQuery {
   async findById(id: number): Promise<FindSampleByIdResult | null> {
-    const entity = await readConnection
-      .getRepository(SampleEntity)
-      .findOneBy({ id });
+    const entity = await this.getBaseQuery().where({ id }).getOne();
     return entity
       ? {
           id: entity.id,
           createdAt: entity.createdAt,
           updatedAt: entity.updatedAt,
           deletedAt: entity.deletedAt,
+          sampleDetail: entity.sampleDetail,
         }
       : null;
   }
 
   async find(query: FindSamplesQuery): Promise<FindSamplesResult> {
+    const entities = await this.getBaseQuery()
+      .skip(query.skip)
+      .take(query.take)
+      .getMany();
+    const samples = entities.map(({ id }) => ({ id }));
+    return { samples };
+  }
+
+  private getBaseQuery(): SelectQueryBuilder<SampleEntity> {
     return readConnection
       .getRepository(SampleEntity)
-      .find({
-        skip: query.skip,
-        take: query.skip,
-      })
-      .then((entities) => ({
-        samples: entities.map((entity) => ({
-          id: entity.id,
-        })),
-      }));
+      .createQueryBuilder('sample')
+      .leftJoinAndSelect('sample.sampleDetail', 'sampleDetail');
   }
 }

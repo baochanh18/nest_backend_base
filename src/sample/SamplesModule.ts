@@ -16,6 +16,7 @@ import { SampleEventHandler } from './application/event/SampleEventHandler';
 
 import { SampleDomainService } from './domain/service/SampleDomainService';
 import { SampleFactory } from './domain/factory/SampleFactory';
+import { SampleDetailFactory } from './domain/factory/SampleDetailFactory';
 
 const infrastructure: Provider[] = [
   {
@@ -35,7 +36,7 @@ const application = [
   SampleEventHandler,
 ];
 
-const domain = [SampleDomainService, SampleFactory];
+const domain = [SampleDomainService, SampleFactory, SampleDetailFactory];
 
 @Module({
   imports: [CqrsModule],

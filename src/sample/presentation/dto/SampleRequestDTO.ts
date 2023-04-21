@@ -6,4 +6,7 @@ export class SampleRequestDTO {
   @Min(1)
   @ApiProperty({ minimum: 1, example: 1 })
   readonly id: number;
+
+  @ApiProperty()
+  readonly content: string | null;
 }

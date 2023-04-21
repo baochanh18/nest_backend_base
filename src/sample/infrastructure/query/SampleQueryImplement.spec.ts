@@ -8,7 +8,8 @@ import { SampleFactory } from '../../domain/factory/SampleFactory';
 import { SampleQueryImplement } from './SampleQueryImplement';
 import { testingConfigure } from '../../../../libs/Testing';
 import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
-import { sampleData } from './testdata';
+import { sampleData, sampleDetailData } from './testdata';
+import { SampleDetailEntity } from '../entity/SampleDetail';
 
 describe('SampleQueryImplement', () => {
   let query: SampleQueryImplement;
@@ -29,11 +30,14 @@ describe('SampleQueryImplement', () => {
     testModule = testConnection.testModule;
     app = testConnection.app;
     query = testModule.get(SampleQueryImplement);
+    await writeConnection.manager.delete(SampleDetailEntity, {});
     await writeConnection.manager.delete(SampleEntity, {});
     await writeConnection.manager.save(SampleEntity, sampleData);
+    await writeConnection.manager.save(SampleDetailEntity, sampleDetailData);
   });
 
   afterAll(async () => {
+    await writeConnection.manager.delete(SampleDetailEntity, {});
     await writeConnection.manager.delete(SampleEntity, {});
     await app.close();
   });
@@ -55,13 +59,27 @@ describe('SampleQueryImplement', () => {
       });
       it('expect result not null', () => {
         expect(result).not.toBeNull();
-        expect(result?.id).toEqual(sampleData[0].id.toString());
+        expect(result?.id).toEqual(1);
+      });
+      it('sampleId is matching', () => {
+        expect(result?.id).toEqual(1);
+      });
+      it('sampleDetail is matching', () => {
+        const expected = {
+          id: 1,
+          sampleId: 1,
+          content: 'test',
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        };
+        expect(result?.sampleDetail).toEqual(expected);
       });
     });
   });
 
   describe('find', () => {
     beforeAll(async () => {
+      await writeConnection.manager.delete(SampleDetailEntity, {});
       await writeConnection.manager.delete(SampleEntity, {});
     });
     describe('should return an empty array if no entities are found', () => {
@@ -78,11 +96,18 @@ describe('SampleQueryImplement', () => {
       let result;
       beforeAll(async () => {
         await writeConnection.manager.save(SampleEntity, sampleData);
+        await writeConnection.manager.save(
+          SampleDetailEntity,
+          sampleDetailData,
+        );
         result = await query.find({ skip: 0, take: 10 });
       });
       it('should return an array of entity data if entities are found', async () => {
-        expect(result.samples).toHaveLength(1);
-        expect(result.samples[0].id).toEqual(sampleData[0].id.toString());
+        expect(result.samples).toHaveLength(2);
+      });
+      it('result is the same with expected', async () => {
+        const expected = { samples: [{ id: 1 }, { id: 2 }] };
+        expect(result).toEqual(expected);
       });
     });
   });
