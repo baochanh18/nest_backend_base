@@ -5,12 +5,11 @@ import { EventPublisher } from '@nestjs/cqrs';
 import { SampleCommand } from './SampleCommand';
 import { SampleHandler } from './SampleHandler';
 import { InjectionToken } from '../InjectionToken';
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleFactory } from '../../domain/factory';
 
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { testingConfigure } from '../../../../libs/Testing';
 import { SampleRepositoryImplement } from '../../infrastructure/repository/SampleRepositoryImplement';
-import { SampleDetailFactory } from '../../domain/factory/SampleDetailFactory';
 import { SampleAggregate } from '../../domain/aggregate/sample';
 import { sampleData } from './testdata';
 
@@ -26,7 +25,6 @@ describe('SampleHandler', () => {
   const providers: Provider[] = [
     SampleHandler,
     SampleFactory,
-    SampleDetailFactory,
     {
       provide: InjectionToken.SAMPLE_REPOSITORY,
       useClass: SampleRepositoryImplement,

@@ -15,8 +15,7 @@ import { InjectionToken } from './application/InjectionToken';
 import { SampleEventHandler } from './application/event/SampleEventHandler';
 
 import { SampleDomainService } from './domain/service/SampleDomainService';
-import { SampleFactory } from './domain/factory/SampleFactory';
-import { SampleDetailFactory } from './domain/factory/SampleDetailFactory';
+import { SampleFactory } from './domain/factory';
 
 const infrastructure: Provider[] = [
   {
@@ -36,7 +35,7 @@ const application = [
   SampleEventHandler,
 ];
 
-const domain = [SampleDomainService, SampleFactory, SampleDetailFactory];
+const domain = [SampleDomainService, SampleFactory];
 
 @Module({
   imports: [CqrsModule],

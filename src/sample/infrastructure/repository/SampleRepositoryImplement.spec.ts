@@ -1,4 +1,4 @@
-import { plainToClass } from 'class-transformer/build/package';
+import { plainToInstance } from 'class-transformer';
 
 import { SampleEntity } from '../entity/Sample';
 import { SampleRepositoryImplement } from './SampleRepositoryImplement';
@@ -8,13 +8,12 @@ import { writeConnection } from '../../../../libs/DatabaseModule';
 import { Sample, SampleAggregate } from '../../domain/aggregate/sample';
 import { EventPublisher } from '@nestjs/cqrs';
 import { INestApplication, Provider } from '@nestjs/common';
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleFactory } from '../../domain/factory';
 import { SampleQueryImplement } from '../query/SampleQueryImplement';
 import { TestingModule } from '@nestjs/testing';
 import { sampleData, sampleKeyValues, updateSampleData } from './testdata';
 import { Redis } from 'ioredis';
 import { REDIS_CLIENT } from '../../../../libs/RedisModule';
-import { SampleDetailFactory } from '../../domain/factory/SampleDetailFactory';
 import { SampleDetailEntity } from '../entity/SampleDetail';
 
 describe('SampleRepositoryImplement', () => {
@@ -25,7 +24,6 @@ describe('SampleRepositoryImplement', () => {
   let redisClient: Redis;
   const providers: Provider[] = [
     SampleFactory,
-    SampleDetailFactory,
     SampleQueryImplement,
     SampleRepositoryImplement,
     {
@@ -75,7 +73,7 @@ describe('SampleRepositoryImplement', () => {
       describe('insert a new record', () => {
         beforeAll(async () => {
           await repository.save(sampleData[0]);
-          entitiy = plainToClass(SampleEntity, await repository.findById(1));
+          entitiy = plainToInstance(SampleEntity, await repository.findById(1));
         });
         it('saved to DB successfully', () => {
           expect(entitiy.id).toEqual(1);
@@ -87,7 +85,7 @@ describe('SampleRepositoryImplement', () => {
       describe('updates an existing record', () => {
         beforeAll(async () => {
           await repository.save(updateSampleData[0]);
-          entitiy = plainToClass(SampleEntity, await repository.findById(1));
+          entitiy = plainToInstance(SampleEntity, await repository.findById(1));
         });
         it('saved to DB successfully', () => {
           expect(entitiy.id).toEqual(1);

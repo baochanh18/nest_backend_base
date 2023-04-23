@@ -1,10 +1,8 @@
-import { plainToClass } from 'class-transformer/build/package';
-import { SampleAggregate } from '../../../domain/aggregate/sample';
-import { SampleDetailAggregate } from '../../../domain/aggregate/sampleDetail';
+import { plainToInstance } from 'class-transformer';
 import { SampleEntity } from '../../entity/Sample';
 import { SampleDetailEntity } from '../../entity/SampleDetail';
 
-const sampleData: SampleEntity[] = plainToClass(SampleEntity, [
+const sampleData: SampleEntity[] = plainToInstance(SampleEntity, [
   {
     id: 1,
   },
@@ -13,7 +11,7 @@ const sampleData: SampleEntity[] = plainToClass(SampleEntity, [
   },
 ]);
 
-const sampleDetailData: SampleDetailEntity[] = plainToClass(
+const sampleDetailData: SampleDetailEntity[] = plainToInstance(
   SampleDetailEntity,
   [
     {

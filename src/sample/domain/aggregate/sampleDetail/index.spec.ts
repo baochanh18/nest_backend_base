@@ -1,13 +1,11 @@
-import { InternalServerErrorException } from '@nestjs/common';
-
-import { SampleDetailAggregate, SampleDetailProperties } from '.';
+import { SampleDetail, SampleDetailProperties } from '.';
 
 describe('SampleDetail', () => {
-  let sampleDetail: SampleDetailAggregate;
-  let updatedSampleDetail: SampleDetailAggregate;
+  let sampleDetail: SampleDetail;
+  let updatedSampleDetail: SampleDetail;
 
   beforeAll(() => {
-    sampleDetail = new SampleDetailAggregate({
+    sampleDetail = new SampleDetail({
       id: 1,
       content: 'test',
       sampleId: 1,
@@ -17,7 +15,7 @@ describe('SampleDetail', () => {
   describe('updateContent', () => {
     beforeAll(() => {
       sampleDetail.updateContent('hogehoge');
-      updatedSampleDetail = new SampleDetailAggregate({
+      updatedSampleDetail = new SampleDetail({
         id: 1,
         content: 'hogehoge',
         sampleId: 1,

@@ -1,5 +1,3 @@
-import { AggregateRoot } from '@nestjs/cqrs';
-
 export type SampleDetailEssentialProperties = Readonly<
   Required<{
     id: number | null;
@@ -18,15 +16,7 @@ export type SampleDetailOptionalProperties = Readonly<
 export type SampleDetailProperties = SampleDetailEssentialProperties &
   Required<SampleDetailOptionalProperties>;
 
-export interface SampleDetail {
-  updateContent: (content: string) => void;
-  getSampleDetail: () => SampleDetailProperties;
-}
-
-export class SampleDetailAggregate
-  extends AggregateRoot
-  implements SampleDetail
-{
+export class SampleDetail {
   private readonly id: number | null;
   private readonly sampleId: number | null;
   private content: string | null;
@@ -34,7 +24,6 @@ export class SampleDetailAggregate
   private updatedAt: Date;
 
   constructor(properties: SampleDetailProperties) {
-    super();
     Object.assign(this, properties);
   }
 

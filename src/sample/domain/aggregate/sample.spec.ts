@@ -1,7 +1,7 @@
 import { InternalServerErrorException } from '@nestjs/common';
 
-import { SampleAggregate, SampleProperties } from '.';
-import { SampleEvent } from '../../event/SampleEvent';
+import { SampleAggregate, SampleProperties } from './sample';
+import { SampleEvent } from '../event/SampleEvent';
 
 describe('Sample', () => {
   let sample: SampleAggregate;

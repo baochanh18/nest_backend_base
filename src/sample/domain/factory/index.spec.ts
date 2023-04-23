@@ -2,8 +2,8 @@ import { EventPublisher } from '@nestjs/cqrs';
 import { INestApplication, Provider } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
 import { SampleFactory } from '.';
-import { Sample, SampleAggregate, SampleProperties } from '../../aggregate/sample';
-import { testingConfigure } from '../../../../../libs/Testing';
+import { Sample, SampleAggregate, SampleProperties } from '../aggregate/sample';
+import { testingConfigure } from '../../../../libs/Testing';
 
 describe('SampleFactory', () => {
   let factory: SampleFactory;
@@ -38,15 +38,9 @@ describe('SampleFactory', () => {
     options = { id: 1 };
     properties = {
       id: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      deletedAt: null,
     };
     input = {
       ...options,
-      createdAt: expect.any(Date),
-      updatedAt: expect.any(Date),
-      deletedAt: null,
     } as SampleProperties;
   });
 
@@ -54,9 +48,9 @@ describe('SampleFactory', () => {
     await app.close();
   });
 
-  describe('create', () => {
+  describe('createAggregate', () => {
     beforeAll(() => {
-      sample = factory.create(options);
+      sample = factory.createAggregate(options);
     });
     it('should create a new sample aggregate with the given options', () => {
       expect(sample.compareId(1)).toBeTruthy();

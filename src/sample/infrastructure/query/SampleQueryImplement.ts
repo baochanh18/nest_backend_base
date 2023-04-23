@@ -2,9 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SelectQueryBuilder } from 'typeorm';
 
 import { readConnection } from '../../../../libs/DatabaseModule';
-
 import { SampleEntity } from '../entity/Sample';
-
 import { SampleQuery } from '../../domain/queryRepository/SampleQuery';
 import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';
 import { FindSamplesResult } from '../../application/query/FindSamples/FindSamplesResult';
@@ -38,6 +36,17 @@ export class SampleQueryImplement implements SampleQuery {
     return readConnection
       .getRepository(SampleEntity)
       .createQueryBuilder('sample')
-      .leftJoinAndSelect('sample.sampleDetail', 'sampleDetail');
+      .leftJoin('sample.sampleDetail', 'sampleDetail')
+      .select([
+        'sample.id',
+        'sample.createdAt',
+        'sample.updatedAt',
+        'sample.deletedAt',
+        'sampleDetail.id',
+        'sampleDetail.sampleId',
+        'sampleDetail.content',
+        'sampleDetail.createdAt',
+        'sampleDetail.updatedAt',
+      ]);
   }
 }

@@ -1,42 +1,41 @@
-import { plainToClass } from 'class-transformer/build/package';
+import { plainToInstance } from 'class-transformer';
 import { SampleAggregate } from '../../../domain/aggregate/sample';
-import { SampleDetailAggregate } from '../../../domain/aggregate/sampleDetail';
 
-const sampleData: SampleAggregate[] = plainToClass(SampleAggregate, [
+const sampleData: SampleAggregate[] = plainToInstance(SampleAggregate, [
   {
     id: 1,
-    sampleDetail: plainToClass(SampleDetailAggregate, {
+    sampleDetail: {
       id: 1,
       sampleId: 1,
       content: 'test',
-    }),
+    },
   },
   {
     id: 2,
-    sampleDetail: plainToClass(SampleDetailAggregate, {
+    sampleDetail: {
       id: 2,
       sampleId: 2,
       content: 'testhoge',
-    }),
+    },
   },
 ]);
 
-const updateSampleData: SampleAggregate[] = plainToClass(SampleAggregate, [
+const updateSampleData: SampleAggregate[] = plainToInstance(SampleAggregate, [
   {
     id: 1,
-    sampleDetail: plainToClass(SampleDetailAggregate, {
+    sampleDetail: {
       id: 1,
       sampleId: 1,
       content: 'updated content 1',
-    }),
+    },
   },
   {
     id: 2,
-    sampleDetail: plainToClass(SampleDetailAggregate, {
+    sampleDetail: {
       id: 2,
       sampleId: 2,
       content: 'updated content 2',
-    }),
+    },
   },
 ]);
 

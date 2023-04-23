@@ -1,36 +1,22 @@
 import { Inject } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import { SelectQueryBuilder } from 'typeorm';
 
 import { writeConnection } from '../../../../libs/DatabaseModule';
-
 import { SampleEntity } from '../entity/Sample';
-
 import { SampleRepository } from '../../domain/repository/SampleRepository';
-import {
-  Sample,
-  SampleAggregate,
-  SampleProperties,
-} from '../../domain/aggregate/sample';
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { Sample } from '../../domain/aggregate/sample';
+import { SampleFactory } from '../../domain/factory';
 import { REDIS_CLIENT } from '../../../../libs/RedisModule';
-import { SampleDetailEntity } from '../entity/SampleDetail';
-import {
-  SampleDetail,
-  SampleDetailAggregate,
-  SampleDetailProperties,
-} from '../..//domain/aggregate/sampleDetail';
-import { SampleDetailFactory } from '../../domain/factory/SampleDetailFactory';
-import { SelectQueryBuilder } from 'typeorm';
 
 export class SampleRepositoryImplement implements SampleRepository {
   @Inject() private readonly sampleFactory: SampleFactory;
-  @Inject() private readonly sampleDetailFactory: SampleDetailFactory;
   @Inject(REDIS_CLIENT)
   private readonly redisClient: Redis;
 
   async save(data: Sample | Sample[]): Promise<void> {
     const models = Array.isArray(data) ? data : [data];
-    const entities = models.map((model) => this.modelToEntity(model));
+    const entities = this.sampleFactory.createEntityArray(models);
     await writeConnection.manager.getRepository(SampleEntity).save(entities);
   }
 
@@ -38,7 +24,7 @@ export class SampleRepositoryImplement implements SampleRepository {
     const entity = await this.baseQuery()
       .where(`sample.id = :id`, { id })
       .getOne();
-    return entity ? this.entityToModel(entity) : null;
+    return entity ? this.sampleFactory.reconstitute(entity) : null;
   }
 
   async getCacheData(key: string): Promise<string | null> {
@@ -49,42 +35,21 @@ export class SampleRepositoryImplement implements SampleRepository {
     await this.redisClient.set(key, value);
   }
 
-  private modelToEntity(model: Sample): SampleEntity {
-    const { sampleDetail, ...properties } = JSON.parse(
-      JSON.stringify(model),
-    ) as SampleProperties;
-    const entity = new SampleEntity();
-    Object.assign(entity, properties);
-
-    if (sampleDetail) {
-      const { id: detailId, ...detailProps } = JSON.parse(
-        JSON.stringify(sampleDetail),
-      ) as SampleDetailProperties;
-      const sampleDetailEntity = new SampleDetailEntity();
-      Object.assign(sampleDetailEntity, detailProps, {
-        id: detailId,
-        sampleId: entity.id,
-      });
-      entity.sampleDetail = sampleDetailEntity;
-    }
-
-    return entity;
-  }
-
-  private entityToModel(entity: SampleEntity): Sample {
-    const { sampleDetail, ...properties } = entity;
-    const sampleDetailAggregate =
-      sampleDetail && this.sampleDetailFactory.create(sampleDetail);
-    return this.sampleFactory.reconstitute({
-      ...properties,
-      sampleDetail: sampleDetailAggregate,
-    });
-  }
-
   private baseQuery(): SelectQueryBuilder<SampleEntity> {
     return writeConnection.manager
       .getRepository(SampleEntity)
       .createQueryBuilder('sample')
-      .leftJoinAndSelect('sample.sampleDetail', 'sampleDetail');
+      .leftJoin('sample.sampleDetail', 'sampleDetail')
+      .select([
+        'sample.id',
+        'sample.createdAt',
+        'sample.updatedAt',
+        'sample.deletedAt',
+        'sampleDetail.id',
+        'sampleDetail.sampleId',
+        'sampleDetail.content',
+        'sampleDetail.createdAt',
+        'sampleDetail.updatedAt',
+      ]);
   }
 }

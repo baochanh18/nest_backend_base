@@ -6,17 +6,15 @@ import { Transactional } from '../../../../libs/Transactional';
 import { SampleCommand } from './SampleCommand';
 import { InjectionToken } from '../InjectionToken';
 
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleFactory } from '../../domain/factory';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
 import { Sample } from '../../domain/aggregate/sample';
-import { SampleDetailFactory } from '../../domain/factory/SampleDetailFactory';
 
 @CommandHandler(SampleCommand)
 export class SampleHandler implements ICommandHandler<SampleCommand, void> {
   @Inject(InjectionToken.SAMPLE_REPOSITORY)
   private readonly sampleRepository: SampleRepository;
   @Inject() private readonly sampleFactory: SampleFactory;
-  @Inject() private readonly sampleDetailFactory: SampleDetailFactory;
 
   async execute(command: SampleCommand): Promise<void> {
     const { content, id } = command;
@@ -25,25 +23,24 @@ export class SampleHandler implements ICommandHandler<SampleCommand, void> {
       const _currentSample = currentSample.getSample();
       const _currentSampleDetail =
         _currentSample?.sampleDetail?.getSampleDetail();
-      const sampleDetail = this.sampleDetailFactory.create({
-        id: _currentSampleDetail?.id ?? null,
-        sampleId: _currentSampleDetail?.sampleId ?? null,
-        content: content,
-      });
-      const sample = this.sampleFactory.create({
+
+      const sample = this.sampleFactory.createAggregate({
         id,
-        sampleDetail,
+        sampleDetail: {
+          id: _currentSampleDetail?.id ?? null,
+          sampleId: _currentSampleDetail?.sampleId ?? null,
+          content: content,
+        },
       });
       await this.dbExecute(sample);
     } else {
-      const sampleDetail = this.sampleDetailFactory.create({
-        id: null,
-        sampleId: null,
-        content: content,
-      });
-      const sample = this.sampleFactory.create({
+      const sample = this.sampleFactory.createAggregate({
         id,
-        sampleDetail,
+        sampleDetail: {
+          id: null,
+          sampleId: null,
+          content: content,
+        },
       });
 
       await this.dbExecute(sample);

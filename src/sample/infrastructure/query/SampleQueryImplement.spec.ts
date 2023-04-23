@@ -4,7 +4,7 @@ import { TestingModule } from '@nestjs/testing';
 
 import { writeConnection } from '../../../../libs/DatabaseModule';
 import { SampleEntity } from '../entity/Sample';
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleFactory } from '../../domain/factory';
 import { SampleQueryImplement } from './SampleQueryImplement';
 import { testingConfigure } from '../../../../libs/Testing';
 import { FindSampleByIdResult } from '../../application/query/FindSampleById/FindSampleByIdResult';

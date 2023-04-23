@@ -1,7 +1,7 @@
 import { SampleAggregate } from '../../../domain/aggregate/sample';
-import { SampleDetailAggregate } from '../../../domain/aggregate/sampleDetail';
+import { SampleDetail } from '../../../domain/aggregate/sampleDetail';
 
-const sampleDetailData = new SampleDetailAggregate({
+const sampleDetailData = new SampleDetail({
   id: 1,
   sampleId: 1,
   content: 'test',
