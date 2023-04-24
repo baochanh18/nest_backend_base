@@ -27,11 +27,11 @@ export class SampleFactory {
     return this.eventPublisher.mergeObjectContext(sample);
   }
 
-  createEntity(options: Sample): SampleEntity {
-    return plainToInstance(SampleEntity, options);
+  createEntity(plainObj: Sample): SampleEntity {
+    return plainToInstance(SampleEntity, plainObj);
   }
 
-  createEntityArray(options: Sample[]): SampleEntity[] {
-    return plainToInstance(SampleEntity, options);
+  createEntityArray(plainObj: Sample[]): SampleEntity[] {
+    return plainToInstance(SampleEntity, plainObj);
   }
 }

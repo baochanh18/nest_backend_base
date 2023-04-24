@@ -1,6 +1,6 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { Type as ClassTranformType } from 'class-transformer';
+import { Type as ClassTransformType } from 'class-transformer';
 
 import { ErrorMessage } from '../ErrorMessage';
 import { SampleEvent } from '../event/SampleEvent';
@@ -37,7 +37,7 @@ export class SampleAggregate extends AggregateRoot implements Sample {
   private readonly createdAt: Date;
   private updatedAt: Date;
   private deletedAt: Date | null;
-  @ClassTranformType(() => SampleDetail)
+  @ClassTransformType(() => SampleDetail)
   private sampleDetail: SampleDetail | null;
 
   constructor(properties: SampleProperties) {

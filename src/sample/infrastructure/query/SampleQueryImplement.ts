@@ -36,7 +36,6 @@ export class SampleQueryImplement implements SampleQuery {
     return readConnection
       .getRepository(SampleEntity)
       .createQueryBuilder('sample')
-      .leftJoin('sample.sampleDetail', 'sampleDetail')
       .select([
         'sample.id',
         'sample.createdAt',
@@ -47,6 +46,7 @@ export class SampleQueryImplement implements SampleQuery {
         'sampleDetail.content',
         'sampleDetail.createdAt',
         'sampleDetail.updatedAt',
-      ]);
+      ])
+      .leftJoin('sample.sampleDetail', 'sampleDetail');
   }
 }

@@ -39,7 +39,6 @@ export class SampleRepositoryImplement implements SampleRepository {
     return writeConnection.manager
       .getRepository(SampleEntity)
       .createQueryBuilder('sample')
-      .leftJoin('sample.sampleDetail', 'sampleDetail')
       .select([
         'sample.id',
         'sample.createdAt',
@@ -50,6 +49,7 @@ export class SampleRepositoryImplement implements SampleRepository {
         'sampleDetail.content',
         'sampleDetail.createdAt',
         'sampleDetail.updatedAt',
-      ]);
+      ])
+      .leftJoin('sample.sampleDetail', 'sampleDetail');
   }
 }
