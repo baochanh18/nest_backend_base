@@ -53,7 +53,7 @@ To start the project containers, run:
 npm run docker:up
 ```
 
-This will start the containers in detached mode. You can then access the project at `http://localhost:4000`.
+This will start the containers in detached mode. You can then access the project at `http://localhost:3846`.
 
 To stop the project containers, run:
 
