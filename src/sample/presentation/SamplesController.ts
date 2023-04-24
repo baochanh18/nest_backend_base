@@ -44,7 +44,7 @@ export class SamplesController {
     description: ResponseDescription.INTERNAL_SERVER_ERROR,
   })
   async sample(@Body() body: SampleRequestDTO): Promise<void> {
-    const command = new SampleCommand(body.id);
+    const command = new SampleCommand(body.id, body.content);
     await this.commandBus.execute(command);
   }
 

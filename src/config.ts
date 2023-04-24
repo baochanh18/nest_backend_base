@@ -45,9 +45,6 @@ class Configuration {
   @IsString()
   readonly DATABASE_PASSWORD = process.env.DATABASE_PASSWORD as string || 'test';
 
-  @IsBoolean()
-  readonly DATABASE_SYNC = process.env.DATABASE_SYNC === 'true' || true;
-
   @IsEmail()
   readonly EMAIL = process.env.EMAIL as string || 'test@example.com';
 

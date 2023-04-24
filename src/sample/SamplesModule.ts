@@ -15,7 +15,7 @@ import { InjectionToken } from './application/InjectionToken';
 import { SampleEventHandler } from './application/event/SampleEventHandler';
 
 import { SampleDomainService } from './domain/service/SampleDomainService';
-import { SampleFactory } from './domain/factory/SampleFactory';
+import { SampleFactory } from './domain/factory';
 
 const infrastructure: Provider[] = [
   {

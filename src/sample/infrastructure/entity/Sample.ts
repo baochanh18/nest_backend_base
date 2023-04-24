@@ -2,13 +2,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { SampleDetailEntity } from './SampleDetail';
 
-@Entity()
+@Entity({ name: 'samples' })
 export class SampleEntity {
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryGeneratedColumn({type: "integer"})
   id: number;
 
   @CreateDateColumn()
@@ -19,4 +21,13 @@ export class SampleEntity {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @OneToOne(
+    (type) => SampleDetailEntity,
+    (sampleDetail) => sampleDetail.sample,
+    {
+      cascade: true,
+    },
+  )
+  sampleDetail: SampleDetailEntity | null;
 }

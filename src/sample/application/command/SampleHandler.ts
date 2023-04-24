@@ -6,9 +6,9 @@ import { Transactional } from '../../../../libs/Transactional';
 import { SampleCommand } from './SampleCommand';
 import { InjectionToken } from '../InjectionToken';
 
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { SampleFactory } from '../../domain/factory';
 import { SampleRepository } from '../../domain/repository/SampleRepository';
-import { Sample } from '../../domain/aggregate/Sample';
+import { Sample } from '../../domain/aggregate/sample';
 
 @CommandHandler(SampleCommand)
 export class SampleHandler implements ICommandHandler<SampleCommand, void> {
@@ -17,11 +17,34 @@ export class SampleHandler implements ICommandHandler<SampleCommand, void> {
   @Inject() private readonly sampleFactory: SampleFactory;
 
   async execute(command: SampleCommand): Promise<void> {
-    const sample = this.sampleFactory.create({
-      ...command,
-    });
+    const { content, id } = command;
+    const currentSample = await this.sampleRepository.findById(id);
+    if (currentSample) {
+      const _currentSample = currentSample.getSample();
+      const _currentSampleDetail =
+        _currentSample?.sampleDetail?.getSampleDetail();
 
-    await this.dbExecute(sample);
+      const sample = this.sampleFactory.createAggregate({
+        id,
+        sampleDetail: {
+          id: _currentSampleDetail?.id ?? null,
+          sampleId: _currentSampleDetail?.sampleId ?? null,
+          content: content,
+        },
+      });
+      await this.dbExecute(sample);
+    } else {
+      const sample = this.sampleFactory.createAggregate({
+        id,
+        sampleDetail: {
+          id: null,
+          sampleId: null,
+          content: content,
+        },
+      });
+
+      await this.dbExecute(sample);
+    }
   }
 
   @Transactional()

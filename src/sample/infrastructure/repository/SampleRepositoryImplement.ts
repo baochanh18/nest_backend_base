@@ -1,13 +1,12 @@
 import { Inject } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import { SelectQueryBuilder } from 'typeorm';
 
 import { writeConnection } from '../../../../libs/DatabaseModule';
-
 import { SampleEntity } from '../entity/Sample';
-
 import { SampleRepository } from '../../domain/repository/SampleRepository';
-import { Sample, SampleProperties } from '../../domain/aggregate/Sample';
-import { SampleFactory } from '../../domain/factory/SampleFactory';
+import { Sample } from '../../domain/aggregate/sample';
+import { SampleFactory } from '../../domain/factory';
 import { REDIS_CLIENT } from '../../../../libs/RedisModule';
 
 export class SampleRepositoryImplement implements SampleRepository {
@@ -17,15 +16,15 @@ export class SampleRepositoryImplement implements SampleRepository {
 
   async save(data: Sample | Sample[]): Promise<void> {
     const models = Array.isArray(data) ? data : [data];
-    const entities = models.map((model) => this.modelToEntity(model));
+    const entities = this.sampleFactory.createEntityArray(models);
     await writeConnection.manager.getRepository(SampleEntity).save(entities);
   }
 
   async findById(id: number): Promise<Sample | null> {
-    const entity = await writeConnection.manager
-      .getRepository(SampleEntity)
-      .findOneBy({ id });
-    return entity ? this.entityToModel(entity) : null;
+    const entity = await this.baseQuery()
+      .where(`sample.id = :id`, { id })
+      .getOne();
+    return entity ? this.sampleFactory.reconstitute(entity) : null;
   }
 
   async getCacheData(key: string): Promise<string | null> {
@@ -36,17 +35,21 @@ export class SampleRepositoryImplement implements SampleRepository {
     await this.redisClient.set(key, value);
   }
 
-  private modelToEntity(model: Sample): SampleEntity {
-    const properties = JSON.parse(JSON.stringify(model)) as SampleProperties; // deep clone object
-    return {
-      ...properties,
-      id: properties.id,
-      createdAt: properties.createdAt,
-      deletedAt: properties.deletedAt,
-    };
-  }
-
-  private entityToModel(entity: SampleEntity): Sample {
-    return this.sampleFactory.reconstitute({ ...entity });
+  private baseQuery(): SelectQueryBuilder<SampleEntity> {
+    return writeConnection.manager
+      .getRepository(SampleEntity)
+      .createQueryBuilder('sample')
+      .select([
+        'sample.id',
+        'sample.createdAt',
+        'sample.updatedAt',
+        'sample.deletedAt',
+        'sampleDetail.id',
+        'sampleDetail.sampleId',
+        'sampleDetail.content',
+        'sampleDetail.createdAt',
+        'sampleDetail.updatedAt',
+      ])
+      .leftJoin('sample.sampleDetail', 'sampleDetail');
   }
 }
