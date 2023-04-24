@@ -49,7 +49,7 @@ class Configuration {
   readonly EMAIL = process.env.EMAIL as string || 'test@example.com';
 
   @IsInt()
-  readonly PORT = Number(process.env.PORT) || 4000;
+  readonly PORT = Number(process.env.PORT) || 3846;
 
   @IsString()
   readonly DOCUMENT_DATABASE_HOST = process.env.DOCUMENT_DATABASE_HOST as string || 'localhost';
